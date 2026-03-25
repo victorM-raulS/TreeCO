@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>TreeCO — Dashboard</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./assets/img/favicon/TreeCO.svg" />
+    <link rel="apple-touch-icon" href="./assets/img/favicon/TreeCO.svg" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/core/root.css" />
+    <link rel="stylesheet" href="./styles/core/base.css" />
+    <link rel="stylesheet" href="./styles/pages/dashboard.css" />
+    <link rel="stylesheet" href="./components/header/header.css" />
+
+
+</head>
+
+<body>
+    <header-component></header-component>
+    <main>
+        <div class="tasks" id="listTasks"></div>
+
+    </main>
+
+    <footer><a href="https://example.com">TreeCO</a> © 2026 by <a href="https://example.com">Víctor Martín | Raul Suero</a>
+        is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a><img
+            src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt=""
+            style="max-width: 1em; max-height: 1em; margin-left: 0.2em" /><img
+            src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt=""
+            style="max-width: 1em; max-height: 1em; margin-left: 0.2em" /><img
+            src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt=""
+            style="max-width: 1em; max-height: 1em; margin-left: 0.2em" /><img
+            src="https://mirrors.creativecommons.org/presskit/icons/nd.svg" alt=""
+            style="max-width: 1em; max-height: 1em; margin-left: 0.2em" /></footer>
+    <script src="./components/header/header-component.js" defer></script>
+    <script type="module" src="./scripts/pages/dashboard.js"></script>
+</body>
+
+</html>

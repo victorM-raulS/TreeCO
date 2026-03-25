@@ -1,0 +1,2169 @@
+/* ═══════════════════════════════════════════════
+   TREECO — projects.css
+   styles/pages/projects.css
+   ═══════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════
+   LAYOUT PRINCIPAL
+   La página se divide en dos columnas: sidebar (248px) + panel principal (resto)
+════════════════════════════════════════════════ */
+.proj-page {
+	width: 100%;
+	/* height y padding-top vienen definidos en base.css */
+	display: grid;
+	grid-template-columns: 248px 1fr; /* Columna fija para el sidebar, el resto para el contenido */
+	overflow: hidden;
+}
+
+/* ════════════════════════════════════════════════
+ SIDEBAR
+ Panel lateral izquierdo con la lista de proyectos y el buscador
+════════════════════════════════════════════════ */
+.proj-sidebar {
+	display: flex;
+	flex-direction: column;
+	border-right: 1px solid rgba(255, 255, 255, 0.06); /* Línea separadora sutil */
+	background: rgba(10, 17, 13, 0.5);                 /* Fondo ligeramente más oscuro que el resto */
+	overflow: hidden;
+}
+
+/* Cabecera del sidebar: título "PROYECTOS" + botón "+" */
+.sidebar-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px 16px 12px;
+}
+
+/* Etiqueta "PROYECTOS" en la cabecera del sidebar */
+.sidebar-label {
+	font-size: 0.70rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;   /* Espaciado entre letras para efecto uppercase */
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.3); /* Texto apagado intencionalmente */
+}
+
+/* Botón circular "+" para crear un nuevo proyecto */
+.btn-icon-round {
+	width: 26px;
+	height: 26px;
+	border-radius: 8px;
+	background: var(--color-green-faint);               /* Verde muy transparente */
+	border: 1px solid rgba(61, 220, 132, 0.2);
+	color: var(--color-green-primary);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+}
+.btn-icon-round:hover {
+	background: var(--color-green-glow);
+	border-color: rgba(61, 220, 132, 0.4);
+	transform: scale(1.08); /* Pequeño efecto de escala al hacer hover */
+}
+
+/* Campo de búsqueda dentro del sidebar */
+.sidebar-search {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 10px 8px;
+	padding: 7px 10px;
+	background: rgba(255, 255, 255, 0.04);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	border-radius: 9px;
+	transition: border-color var(--duration-fast);
+}
+/* Al enfocar el input dentro del buscador, el borde se ilumina en verde */
+.sidebar-search:focus-within {
+	border-color: rgba(61, 220, 132, 0.25);
+	background: rgba(255, 255, 255, 0.06);
+}
+.sidebar-search svg { color: rgba(255, 255, 255, 0.2); flex-shrink: 0; }
+.sidebar-search input {
+	background: none;
+	border: none;
+	outline: none;
+	color: var(--color-text-primary);
+	font-family: var(--font-sans);
+	font-size: 0.78rem;
+	width: 100%;
+}
+.sidebar-search input::placeholder { color: rgba(255, 255, 255, 0.2); }
+
+/* Lista de proyectos: ocupa todo el espacio disponible y permite scroll vertical */
+.project-list {
+	flex: 1;
+	overflow-y: auto;
+	scrollbar-width: none; /* Oculta la scrollbar en Firefox */
+	padding: 4px 8px;
+}
+.project-list::-webkit-scrollbar { display: none; } /* Oculta la scrollbar en Chrome/Safari */
+
+/* Spinner de carga que aparece mientras se obtienen los proyectos del backend */
+.sidebar-loading { display: flex; justify-content: center; padding: 28px; }
+
+/* ── Ítem de proyecto en el sidebar ─── */
+.proj-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+	position: relative;
+	margin-bottom: 1px;
+	border: 1px solid transparent; /* El borde se vuelve visible cuando está activo */
+}
+.proj-item:hover { background: rgba(255, 255, 255, 0.05); }
+/* Estado activo: fondo y borde verdes sutiles */
+.proj-item.active {
+	background: rgba(61, 220, 132, 0.07);
+	border-color: rgba(61, 220, 132, 0.12);
+}
+
+/* Punto de color del proyecto (círculo pequeño) */
+.proj-item-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	flex-shrink: 0;
+	transition: box-shadow var(--duration-fast);
+}
+/* Cuando el proyecto está activo, el punto brilla con su propio color */
+.proj-item.active .proj-item-dot {
+	box-shadow: 0 0 6px currentColor;
+}
+
+.proj-item-body { flex: 1; min-width: 0; } /* min-width: 0 necesario para que el texto se trunque */
+
+/* Nombre del proyecto: se trunca con "..." si es demasiado largo */
+.proj-item-name {
+	font-size: 0.83rem;
+	font-weight: 500;
+	color: var(--color-text-primary);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 1.3;
+}
+/* El nombre del proyecto activo se muestra en verde */
+.proj-item.active .proj-item-name { color: var(--color-text-accent); }
+
+/* Porcentaje de progreso debajo del nombre del proyecto */
+.proj-item-sub {
+	font-size: 0.66rem;
+	color: rgba(255, 255, 255, 0.25);
+	margin-top: 2px;
+	font-family: var(--font-mono); /* Fuente monoespaciada para los números */
+}
+
+/* Botones de acción del ítem (renombrar/eliminar): se muestran solo al hacer hover */
+.proj-item-actions {
+	display: flex;
+	gap: 2px;
+	opacity: 0;
+	transition: opacity var(--duration-fast);
+}
+.proj-item:hover .proj-item-actions { opacity: 1; }
+
+/* Botón de acción pequeño dentro del ítem de sidebar */
+.btn-row-action {
+	width: 22px;
+	height: 22px;
+	border-radius: 6px;
+	background: none;
+	border: none;
+	color: rgba(255, 255, 255, 0.3);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all var(--duration-fast);
+}
+.btn-row-action:hover { background: rgba(255, 255, 255, 0.08); color: var(--color-text-primary); }
+/* Versión de borrado: al hover se vuelve rojo */
+.btn-row-action.del:hover { background: rgba(255, 80, 80, 0.1); color: var(--color-error); }
+
+/* Footer del sidebar: muestra el contador total de proyectos */
+.sidebar-footer {
+	padding: 12px 16px;
+	border-top: 1px solid rgba(255, 255, 255, 0.05);
+	font-size: 0.65rem;
+	color: rgba(255, 255, 255, 0.2);
+	font-family: var(--font-mono);
+}
+
+/* Mensaje que aparece cuando no hay proyectos o la búsqueda no da resultados */
+.empty-sidebar-msg {
+	padding: 20px 12px;
+	text-align: center;
+	font-size: 0.78rem;
+	color: rgba(255, 255, 255, 0.2);
+	line-height: 1.7;
+}
+
+
+/* ════════════════════════════════════════════════
+ PANEL PRINCIPAL (zona derecha de la página)
+════════════════════════════════════════════════ */
+.proj-main {
+	overflow-y: auto;   /* Scroll vertical si el contenido supera la altura */
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+/* ── Estado vacío (ningún proyecto seleccionado) ── */
+.proj-empty {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 14px;
+	padding: 60px 24px;
+	text-align: center;
+}
+.proj-empty-art   { color: var(--color-text-accent); margin-bottom: 8px; } /* Icono/ilustración */
+.proj-empty-title { font-size: 1.1rem; font-weight: 600; color: rgba(255,255,255,0.5); }
+.proj-empty-sub   { font-size: 0.82rem; color: rgba(255,255,255,0.25); }
+
+/* Botón "Crear proyecto" en la pantalla de estado vacío */
+.btn-empty-create {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 20px;
+	background: var(--color-green-faint);
+	border: 1px solid rgba(61, 220, 132, 0.25);
+	border-radius: 10px;
+	color: var(--color-text-accent);
+	font-family: var(--font-sans);
+	font-size: 0.82rem;
+	font-weight: 500;
+	cursor: pointer;
+	margin-top: 8px;
+	transition: all var(--duration-fast);
+}
+.btn-empty-create:hover {
+	background: var(--color-green-glow);
+	border-color: rgba(61, 220, 132, 0.4);
+}
+
+
+/* ════════════════════════════════════════════════
+ CABECERA DEL PROYECTO
+ Muestra el nombre, descripción, stats y botones de acción del proyecto activo
+════════════════════════════════════════════════ */
+.proj-header {
+	display: flex;
+	align-items: flex-start;
+	gap: 20px;
+	padding: 24px 28px 20px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+	flex-shrink: 0; /* No se comprime si el contenido de abajo necesita más espacio */
+}
+.proj-header-left { flex: 1; min-width: 0; }
+
+/* Fila con el punto de color y el título del proyecto */
+.proj-title-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-bottom: 5px;
+}
+.proj-color-pill {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+/* Título principal del proyecto */
+.proj-title {
+	font-size: 1.45rem;
+	font-weight: 700;
+	color: var(--color-text-primary);
+	letter-spacing: -0.03em;
+	line-height: 1.2;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Botón pequeño para editar el nombre del proyecto (icono de lápiz) */
+.btn-inline-edit {
+	background: none;
+	border: none;
+	color: rgba(255,255,255,0.2);
+	cursor: pointer;
+	padding: 4px;
+	border-radius: 6px;
+	display: flex;
+	align-items: center;
+	transition: all var(--duration-fast);
+	flex-shrink: 0;
+}
+.btn-inline-edit:hover { color: var(--color-text-accent); background: var(--color-green-faint); }
+
+/* Descripción del proyecto (texto secundario debajo del título) */
+.proj-description {
+	font-size: 0.82rem;
+	color: rgba(255,255,255,0.35);
+	line-height: 1.5;
+}
+
+/* Bloque de estadísticas en la cabecera: Total tareas | % progreso | Miembros */
+.proj-header-stats {
+	display: flex;
+	gap: 20px;
+	flex-shrink: 0;
+	align-items: center;
+}
+.stat-block { text-align: center; }
+.stat-value {
+	font-size: 1.3rem;
+	font-weight: 700;
+	font-family: var(--font-mono);
+	color: var(--color-text-primary);
+	line-height: 1;
+}
+.stat-label {
+	font-size: 0.62rem;
+	font-weight: 600;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+	color: rgba(255,255,255,0.25);
+	margin-top: 3px;
+}
+/* Línea divisora vertical entre estadísticas */
+.stat-divider {
+	width: 1px;
+	height: 32px;
+	background: rgba(255,255,255,0.07);
+}
+
+/* Contenedor de los botones de acción del header (Renombrar, Eliminar, Inicio) */
+.proj-header-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+}
+
+/* Botón fantasma pequeño (para acciones destructivas como Eliminar) */
+.btn-ghost-sm {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 7px 12px;
+	background: none;
+	border: 1px solid rgba(255,80,80,0.15);
+	border-radius: 9px;
+	color: rgba(255,80,80,0.5);
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	font-weight: 500;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: all var(--duration-fast);
+}
+.btn-ghost-sm:hover {
+	background: rgba(255,80,80,0.07);
+	border-color: rgba(255,80,80,0.3);
+	color: var(--color-error);
+}
+
+/* Variante "Inicio" del btn-ghost-sm: colores neutros (no destructivo) */
+.btn-home { border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); }
+.btn-home:hover {
+	background: rgba(255,255,255,0.05) !important;
+	border-color: rgba(255,255,255,0.18) !important;
+	color: rgba(255,255,255,0.65) !important;
+}
+
+
+/* ════════════════════════════════════════════════
+ BARRA DE PROGRESO DEL PROYECTO
+════════════════════════════════════════════════ */
+.proj-progress-section {
+	padding: 16px 28px 18px;
+	border-bottom: 1px solid rgba(255,255,255,0.05);
+	flex-shrink: 0;
+}
+.progress-top {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin-bottom: 8px;
+}
+.progress-label-text {
+	font-size: 0.68rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: rgba(255,255,255,0.25);
+}
+/* Porcentaje de progreso que aparece a la derecha de la barra */
+.progress-value {
+	font-size: 0.78rem;
+	font-weight: 700;
+	font-family: var(--font-mono);
+	color: var(--color-text-accent);
+}
+/* Track (fondo) de la barra de progreso */
+.progress-track {
+	height: 4px;
+	background: rgba(255,255,255,0.06);
+	border-radius: 99px;
+	overflow: hidden;
+	margin-bottom: 10px;
+}
+/* Relleno de la barra de progreso (animado con transición suave de 600ms) */
+.progress-fill {
+	height: 100%;
+	background: linear-gradient(90deg, var(--color-green-primary), #22cc6e);
+	border-radius: 99px;
+	box-shadow: 0 0 10px var(--color-green-glow);
+	transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1); /* Animación suave tipo ease-in-out */
+}
+/* Desglose de tareas debajo de la barra: completadas / en curso / vencidas */
+.progress-breakdown { display: flex; gap: 18px; }
+.pb-item {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 0.70rem;
+	color: rgba(255,255,255,0.3);
+}
+.pb-dot { width: 5px; height: 5px; border-radius: 50%; }
+
+
+/* ════════════════════════════════════════════════
+ PESTAÑAS (Tareas / Miembros / Calendario)
+════════════════════════════════════════════════ */
+.proj-tabs {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	padding: 0 28px 28px;
+	min-height: 0; /* Necesario para que flex funcione correctamente dentro de overflow */
+}
+/* Contenedor de las píldoras de pestaña */
+.tabs-nav {
+	display: flex;
+	gap: 2px;
+	padding: 14px 0 0;
+	border-bottom: 1px solid rgba(255,255,255,0.06);
+	margin-bottom: 20px;
+	flex-shrink: 0;
+}
+/* Botón de pestaña individual */
+.tab-pill {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 16px;
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent; /* El borde inferior aparece cuando está activa */
+	color: rgba(255,255,255,0.3);
+	font-family: var(--font-sans);
+	font-size: 0.80rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+	position: relative;
+	bottom: -1px; /* Alinea el borde inferior con la línea del nav */
+}
+.tab-pill:hover { color: rgba(255,255,255,0.6); }
+/* Pestaña activa: texto y borde en verde */
+.tab-pill.active {
+	color: var(--color-text-accent);
+	border-bottom-color: var(--color-green-primary);
+}
+/* Badge con el contador de elementos en la pestaña (ej: número de tareas) */
+.tab-count {
+	font-size: 0.62rem;
+	font-weight: 700;
+	font-family: var(--font-mono);
+	padding: 1px 6px;
+	border-radius: 99px;
+	background: rgba(255,255,255,0.07);
+	color: rgba(255,255,255,0.3);
+	transition: all var(--duration-fast);
+}
+.tab-pill.active .tab-count {
+	background: rgba(61,220,132,0.12);
+	color: var(--color-text-accent);
+}
+/* Panel de contenido de cada pestaña: oculto por defecto */
+.tab-pane { display: none; }
+/* Solo el panel activo se muestra */
+.tab-pane.active { display: flex; flex-direction: column; gap: 16px; flex: 1; }
+
+
+/* ════════════════════════════════════════════════
+ CONTROLES DE TAREAS (barra sobre el Kanban)
+ Contiene: buscador, filtros de estado, selector de orden y botón "Nueva tarea"
+════════════════════════════════════════════════ */
+.tasks-controls {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	flex-shrink: 0;
+}
+
+/* Campo de búsqueda de tareas */
+.task-search-wrap {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 7px 11px;
+	background: rgba(255,255,255,0.04);
+	border: 1px solid rgba(255,255,255,0.07);
+	border-radius: 9px;
+	min-width: 180px;
+	transition: border-color var(--duration-fast);
+}
+.task-search-wrap:focus-within { border-color: rgba(61,220,132,0.25); }
+.task-search-wrap svg { color: rgba(255,255,255,0.2); flex-shrink: 0; }
+.task-search-wrap input {
+	background: none;
+	border: none;
+	outline: none;
+	color: var(--color-text-primary);
+	font-family: var(--font-sans);
+	font-size: 0.78rem;
+	width: 100%;
+}
+.task-search-wrap input::placeholder { color: rgba(255,255,255,0.2); }
+
+/* Contenedor de los chips de filtro */
+.task-filters { display: flex; gap: 3px; }
+
+/* Chip de filtro individual (Todas / Completadas / Vencidas / En curso) */
+.filter-chip {
+	padding: 5px 11px;
+	border-radius: 8px;
+	background: none;
+	border: 1px solid transparent;
+	color: rgba(255,255,255,0.3);
+	font-family: var(--font-sans);
+	font-size: 0.73rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+}
+.filter-chip:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.04); }
+/* Chip activo: fondo y borde verdes */
+.filter-chip.active {
+	color: var(--color-text-accent);
+	background: rgba(61,220,132,0.08);
+	border-color: rgba(61,220,132,0.2);
+}
+
+/* Estilos para el select nativo de ordenación (legacy, actualmente sustituido por custom select) */
+.task-sort-wrap .select-wrap { position: relative; }
+.sort-select {
+	appearance: none; /* Elimina el estilo nativo del navegador */
+	background: rgba(255,255,255,0.04);
+	border: 1px solid rgba(255,255,255,0.07);
+	border-radius: 9px;
+	color: rgba(255,255,255,0.4);
+	font-family: var(--font-sans);
+	font-size: 0.73rem;
+	padding: 7px 28px 7px 10px;
+	cursor: pointer;
+	outline: none;
+	transition: border-color var(--duration-fast);
+}
+.sort-select:hover { border-color: rgba(255,255,255,0.14); color: rgba(255,255,255,0.7); }
+.task-sort-wrap .select-wrap svg {
+	position: absolute;
+	right: 9px;
+	top: 50%;
+	transform: translateY(-50%);
+	pointer-events: none; /* No interfiere con el clic en el select */
+	color: rgba(255,255,255,0.2);
+}
+
+/* Botón principal "Nueva tarea" (verde sólido, alineado a la derecha) */
+.btn-add-task-main {
+	margin-left: auto; /* Empuja el botón hacia la derecha */
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 16px;
+	background: var(--color-green-primary);
+	border: none;
+	border-radius: 9px;
+	color: #050a08; /* Texto oscuro sobre fondo verde */
+	font-family: var(--font-sans);
+	font-size: 0.78rem;
+	font-weight: 700;
+	cursor: pointer;
+	white-space: nowrap;
+	box-shadow: 0 2px 12px rgba(61,220,132,0.25);
+	transition: all var(--duration-fast);
+}
+.btn-add-task-main:hover {
+	background: #4fe897;
+	box-shadow: 0 4px 20px rgba(61,220,132,0.4);
+	transform: translateY(-1px); /* Efecto de elevación al hacer hover */
+}
+
+
+/* ════════════════════════════════════════════════
+ TABLERO KANBAN
+ 3 columnas: "En curso" | "Vencidas" | "Completadas"
+════════════════════════════════════════════════ */
+.kanban-board {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales */
+	gap: 12px;
+	align-items: start; /* Las columnas no se estiran para igualar altura */
+}
+
+/* Columna individual del kanban */
+.kanban-col {
+	border-radius: 14px;
+	background: rgba(255,255,255,0.025);
+	border: 1px solid rgba(255,255,255,0.055);
+	overflow: hidden;
+}
+
+/* Cabecera de la columna: punto de color + nombre + contador */
+.kanban-col-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 14px 10px;
+	border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.kanban-col-label {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	font-size: 0.65rem;
+	font-weight: 700;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	color: rgba(255,255,255,0.3);
+}
+/* Punto de estado de la columna (azul=activas, naranja=vencidas, verde=completadas) */
+.col-status-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* Badge con el número de tareas en la columna */
+.kanban-col-count {
+	font-size: 0.65rem;
+	font-weight: 600;
+	font-family: var(--font-mono);
+	padding: 1px 7px;
+	border-radius: 99px;
+	background: rgba(255,255,255,0.06);
+	color: rgba(255,255,255,0.25);
+}
+
+/* Área de las tarjetas dentro de una columna */
+.kanban-cards {
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+	min-height: 80px; /* Altura mínima para que la columna sea visible aunque esté vacía */
+}
+
+/* ── Tarjeta de tarea ── */
+.task-card {
+	background: rgba(255,255,255,0.04);
+	border: 1px solid rgba(255,255,255,0.07);
+	border-radius: 10px;
+	padding: 12px 13px;
+	cursor: pointer;
+	transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+	animation: slideUp 220ms cubic-bezier(0.34, 1.56, 0.64, 1) both; /* Animación de entrada */
+}
+/* Animación de entrada para las tarjetas (suben desde abajo con rebote sutil) */
+@keyframes slideUp {
+	from { opacity: 0; transform: translateY(8px) scale(0.97); }
+	to   { opacity: 1; transform: none; }
+}
+.task-card:hover {
+	background: rgba(255,255,255,0.07);
+	border-color: rgba(255,255,255,0.12);
+	transform: translateY(-2px); /* Sube ligeramente al hacer hover */
+	box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+/* Las tarjetas completadas se muestran semi-transparentes */
+.task-card.completed { opacity: 0.5; }
+.task-card.completed:hover { opacity: 0.75; }
+
+/* Fila superior de la tarjeta: título + botones de acción */
+.task-card-top {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 8px;
+	margin-bottom: 7px;
+}
+.task-card-title {
+	font-size: 0.82rem;
+	font-weight: 500;
+	color: var(--color-text-primary);
+	line-height: 1.4;
+}
+/* El título de las tareas completadas aparece tachado */
+.task-card.completed .task-card-title {
+	text-decoration: line-through;
+	color: rgba(255,255,255,0.3);
+}
+
+/* Botones de acción (editar, completar, eliminar): solo visibles al hacer hover en la tarjeta */
+.task-card-btns {
+	display: flex;
+	gap: 2px;
+	opacity: 0;
+	transition: opacity var(--duration-fast);
+	flex-shrink: 0;
+}
+.task-card:hover .task-card-btns { opacity: 1; }
+
+/* Botón de acción individual dentro de la tarjeta (icono de 20x20px) */
+.task-card-btn {
+	width: 20px;
+	height: 20px;
+	border-radius: 5px;
+	background: none;
+	border: none;
+	color: rgba(255,255,255,0.3);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all var(--duration-fast);
+}
+.task-card-btn:hover { background: rgba(255,255,255,0.08); color: var(--color-text-primary); }
+/* Botón de eliminar: rojo al hover */
+.task-card-btn.del:hover { background: rgba(255,80,80,0.1); color: var(--color-error); }
+
+/* Descripción de la tarea: máximo 2 líneas con "..." al desbordarse */
+.task-card-desc {
+	font-size: 0.73rem;
+	color: rgba(255,255,255,0.35);
+	line-height: 1.45;
+	margin-bottom: 9px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;    /* Limita a 2 líneas */
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* Pie de la tarjeta: badges de metadatos + avatar del responsable */
+.task-card-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 6px;
+}
+.task-card-meta {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-wrap: wrap; /* Los badges se envuelven si no caben en una línea */
+}
+
+/* Chip de prioridad (redondo): Alta / Media / Baja / Hecha / Vencida */
+.prio-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 0.60rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	padding: 2px 7px;
+	border-radius: 99px;
+}
+.prio-HIGH { background: rgba(255,100,100,0.1); color: #ff8888; }  /* Rojo */
+.prio-MID  { background: rgba(251,191,36,0.1);  color: #fbbf24; }  /* Amarillo */
+.prio-LOW  { background: rgba(61,220,132,0.1);  color: #6ee7b7; }  /* Verde */
+.prio-done { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.25); } /* Gris (completada) */
+.prio-exp  { background: rgba(249,115,22,0.1);  color: #fb923c; }  /* Naranja (vencida) */
+
+/* Fecha límite en la tarjeta */
+.task-deadline {
+	font-size: 0.66rem;
+	font-family: var(--font-mono);
+	color: rgba(255,255,255,0.25);
+	display: flex;
+	align-items: center;
+	gap: 3px;
+}
+.task-deadline.soon    { color: #fbbf24; } /* Próxima a vencer: amarillo */
+.task-deadline.expired { color: #fb923c; } /* Vencida: naranja */
+
+/* Avatar y nombre del responsable asignado a la tarea */
+.task-assignee-wrap {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	flex-shrink: 0;
+}
+.task-assignee-bubble {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.52rem;
+	font-weight: 700;
+	color: #050a08;
+	flex-shrink: 0;
+}
+.task-assignee-name {
+	font-size: 0.65rem;
+	color: rgba(255,255,255,0.35);
+	white-space: nowrap;
+	max-width: 70px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Botón "+ Añadir tarea" al pie de cada columna del kanban */
+.col-add-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	width: 100%;
+	padding: 9px;
+	background: none;
+	border: none;
+	color: rgba(255,255,255,0.2);
+	font-family: var(--font-sans);
+	font-size: 0.73rem;
+	cursor: pointer;
+	border-top: 1px solid rgba(255,255,255,0.04);
+	transition: all var(--duration-fast);
+}
+.col-add-btn:hover {
+	color: var(--color-text-accent);
+	background: rgba(61,220,132,0.05);
+}
+
+/* Mensaje "Sin tareas" cuando la columna está vacía */
+.col-empty {
+	text-align: center;
+	padding: 20px 12px;
+	color: rgba(255,255,255,0.15);
+	font-size: 0.75rem;
+}
+
+
+/* ════════════════════════════════════════════════
+ SECCIÓN DE MIEMBROS
+ Grid de dos columnas: lista de miembros + panel de invitación
+════════════════════════════════════════════════ */
+.members-section {
+	display: grid;
+	grid-template-columns: 1fr 300px; /* Lista flexible + panel de invitación fijo */
+	gap: 16px;
+	align-items: start;
+}
+.members-list { display: flex; flex-direction: column; gap: 6px; }
+
+/* Fila de un miembro: avatar + info + badge de rol + botones de acción */
+.member-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 11px 14px;
+	background: rgba(255,255,255,0.03);
+	border: 1px solid rgba(255,255,255,0.06);
+	border-radius: 12px;
+	transition: background var(--duration-fast), border-color var(--duration-fast);
+	animation: slideUp 200ms var(--ease-bounce) both; /* Animación de entrada */
+}
+.member-row:hover { background: rgba(255,255,255,0.055); border-color: rgba(255,255,255,0.1); }
+
+/* Avatar circular del miembro con sus iniciales */
+.member-avatar {
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.80rem;
+	font-weight: 700;
+	color: #050a08;
+	flex-shrink: 0;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.member-info { flex: 1; min-width: 0; }
+
+/* Nombre del miembro */
+.member-name {
+	font-size: 0.84rem;
+	font-weight: 500;
+	color: var(--color-text-primary);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+/* Etiqueta "(tú)" junto al nombre del usuario actual */
+.member-you-tag {
+	font-size: 0.62rem;
+	font-weight: 500;
+	color: var(--color-text-accent);
+	opacity: 0.65;
+	flex-shrink: 0;
+}
+/* Email/ID del miembro debajo del nombre */
+.member-sub {
+	font-size: 0.65rem;
+	color: rgba(255,255,255,0.22);
+	font-family: var(--font-mono);
+	margin-top: 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Badge de rol del miembro: Dueño / Admin / Miembro */
+.member-role-badge {
+	font-size: 0.58rem;
+	font-weight: 700;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+	padding: 3px 9px;
+	border-radius: 99px;
+	flex-shrink: 0;
+}
+.role-OWNER  { background: rgba(255,215,0,0.08);   color: #ffd700; border: 1px solid rgba(255,215,0,0.15); }   /* Dorado */
+.role-ADMIN  { background: rgba(61,220,132,0.08);  color: var(--color-text-accent); border: 1px solid rgba(61,220,132,0.15); } /* Verde */
+.role-MEMBER { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.07); }  /* Gris */
+
+/* Botones de acción del miembro: ocultos por defecto, se animan al hacer hover en la fila */
+.member-actions {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	flex-shrink: 0;
+	max-width: 0;      /* Ancho 0 para no ocupar espacio cuando está oculto */
+	overflow: hidden;
+	opacity: 0;
+	transition: max-width 220ms ease, opacity 180ms ease;
+}
+/* Al hover sobre la fila, los botones de acción se despliegan suavemente */
+.member-row:hover .member-actions { max-width: 240px; opacity: 1; }
+
+/* Botón de acción individual de un miembro (cambiar rol o eliminar) */
+.btn-member-action {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 4px 10px;
+	background: rgba(255,255,255,0.04);
+	border: 1px solid rgba(255,255,255,0.09);
+	border-radius: 7px;
+	color: rgba(255,255,255,0.38);
+	font-family: var(--font-sans);
+	font-size: 0.70rem;
+	font-weight: 500;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: background var(--duration-fast), border-color var(--duration-fast), color var(--duration-fast);
+}
+.btn-member-action:hover {
+	background: rgba(61,220,132,0.09);
+	border-color: rgba(61,220,132,0.25);
+	color: var(--color-text-accent);
+}
+/* Variante eliminar: solo icono, se vuelve rojo al hover */
+.btn-member-remove { padding: 5px 7px; background: none; border-color: transparent; }
+.btn-member-remove:hover {
+	background: rgba(255,80,80,0.09) !important;
+	border-color: rgba(255,80,80,0.2) !important;
+	color: var(--color-error) !important;
+}
+
+/* Panel antiguo de "Añadir miembro" (reemplazado por invite-panel) */
+.add-member-panel {
+	background: rgba(255,255,255,0.03);
+	border: 1px solid rgba(255,255,255,0.07);
+	border-radius: 14px;
+	padding: 18px;
+	position: sticky;
+	top: 0; /* Se mantiene visible al hacer scroll */
+}
+.add-member-panel-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.72rem;
+	font-weight: 600;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+	color: rgba(255,255,255,0.3);
+	margin-bottom: 14px;
+}
+.add-member-fields { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.add-member-note   { font-size: 0.70rem; color: rgba(255,255,255,0.2); line-height: 1.5; }
+
+/* Botón de invitar (verde) */
+.btn-invite {
+	width: 100%;
+	padding: 9px;
+	background: rgba(61,220,132,0.08);
+	border: 1px solid rgba(61,220,132,0.2);
+	border-radius: 9px;
+	color: var(--color-text-accent);
+	font-family: var(--font-sans);
+	font-size: 0.80rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+}
+.btn-invite:hover {
+	background: rgba(61,220,132,0.14);
+	border-color: rgba(61,220,132,0.35);
+	box-shadow: 0 4px 16px rgba(61,220,132,0.12);
+}
+/* Mensaje cuando no hay miembros todavía */
+.members-empty { padding: 32px; text-align: center; color: rgba(255,255,255,0.2); font-size: 0.78rem; }
+
+
+/* ════════════════════════════════════════════════
+ PANEL DE INVITACIÓN CON BÚSQUEDA
+ Permite buscar usuarios del sistema y añadirlos al proyecto
+════════════════════════════════════════════════ */
+.invite-panel {
+	background: rgba(255,255,255,0.03);
+	border: 1px solid rgba(255,255,255,0.07);
+	border-radius: 14px;
+	padding: 18px;
+	position: sticky;
+	top: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+.invite-panel-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.70rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: rgba(255,255,255,0.3);
+}
+
+/* Caja de búsqueda de usuarios con spinner integrado */
+.invite-search-wrap {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 34px 9px 11px; /* Espacio derecho para el spinner */
+	background: rgba(255,255,255,0.05);
+	border: 1px solid rgba(255,255,255,0.09);
+	border-radius: 10px;
+	position: relative;
+	transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+.invite-search-wrap:focus-within {
+	border-color: rgba(61,220,132,0.35);
+	box-shadow: 0 0 0 3px rgba(61,220,132,0.06);
+}
+.invite-search-wrap > svg { color: rgba(255,255,255,0.25); flex-shrink: 0; }
+.invite-search-wrap input {
+	flex: 1;
+	min-width: 0;
+	background: none;
+	border: none;
+	outline: none;
+	color: var(--color-text-primary);
+	font-family: var(--font-sans);
+	font-size: 0.83rem;
+}
+.invite-search-wrap input::placeholder { color: rgba(255,255,255,0.2); }
+
+/* Spinner de carga posicionado absolutamente dentro del campo de búsqueda */
+.invite-search-spinner {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 14px;
+	height: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none; /* No bloquea los clics */
+}
+.invite-search-spinner .spinner { width: 14px; height: 14px; border-width: 1.5px; }
+
+/* Dropdown de resultados de búsqueda de usuarios */
+.invite-results {
+	border: 1px solid rgba(255,255,255,0.08);
+	border-radius: 10px;
+	overflow: hidden;
+	background: #0d1610;
+	box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+
+/* Item de resultado de búsqueda */
+.invite-result-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	cursor: pointer;
+	transition: background var(--duration-fast);
+	border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.invite-result-item:last-child { border-bottom: none; }
+.invite-result-item:hover { background: rgba(61,220,132,0.05); }
+/* Los usuarios que ya son miembros aparecen desactivados y no se pueden seleccionar */
+.invite-result-item.already-member { opacity: 0.4; pointer-events: none; }
+
+/* Avatar circular del resultado de búsqueda */
+.invite-result-avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.72rem;
+	font-weight: 700;
+	color: #050a08;
+	flex-shrink: 0;
+}
+.invite-result-info { flex: 1; min-width: 0; }
+.invite-result-name  {
+	font-size: 0.82rem;
+	font-weight: 500;
+	color: var(--color-text-primary);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.invite-result-email {
+	font-size: 0.67rem;
+	color: rgba(255,255,255,0.3);
+	font-family: var(--font-mono);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+/* Badge "Ya miembro" que aparece junto a usuarios que ya pertenecen al proyecto */
+.invite-result-badge {
+	font-size: 0.60rem;
+	font-weight: 600;
+	padding: 2px 7px;
+	border-radius: 99px;
+	background: rgba(61,220,132,0.08);
+	color: var(--color-text-accent);
+	border: 1px solid rgba(61,220,132,0.15);
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+/* Mensaje cuando la búsqueda no devuelve resultados */
+.invite-no-results {
+	padding: 16px 12px;
+	text-align: center;
+	font-size: 0.78rem;
+	color: rgba(255,255,255,0.2);
+}
+
+/* Preview del usuario seleccionado (aparece con animación después de elegir uno) */
+.invite-selected {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 12px;
+	background: rgba(61,220,132,0.04);
+	border: 1px solid rgba(61,220,132,0.12);
+	border-radius: 10px;
+	animation: slideUp 200ms var(--ease-bounce) both;
+}
+.invite-selected-user { display: flex; align-items: center; gap: 10px; }
+
+/* Fila con el selector de rol y el botón de confirmar invitación */
+.invite-role-row { display: flex; align-items: center; gap: 8px; }
+
+/* Botón de confirmar invitación (verde sólido) */
+.btn-invite-confirm {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 9px 16px;
+	white-space: nowrap;
+	background: var(--color-green-primary);
+	border: none;
+	border-radius: 9px;
+	color: #050a08;
+	font-family: var(--font-sans);
+	font-size: 0.78rem;
+	font-weight: 700;
+	cursor: pointer;
+	box-shadow: 0 2px 12px rgba(61,220,132,0.25);
+	transition: all var(--duration-fast);
+}
+.btn-invite-confirm:hover {
+	background: #4fe897;
+	box-shadow: 0 4px 20px rgba(61,220,132,0.4);
+	transform: translateY(-1px);
+}
+/* Texto informativo debajo del panel de invitación */
+.invite-note { font-size: 0.67rem; color: rgba(255,255,255,0.18); line-height: 1.5; margin-top: -4px; }
+
+
+/* ════════════════════════════════════════════════
+ PESTAÑA DE CALENDARIO (bridge)
+ Muestra un resumen de fechas límite y un enlace al calendario completo
+════════════════════════════════════════════════ */
+.cal-bridge {
+	display: grid;
+	grid-template-columns: auto 1fr;  /* Columna del icono + columna del contenido */
+	grid-template-rows: auto 1fr;
+	gap: 0 24px;
+	background: rgba(255,255,255,0.025);
+	border: 1px solid rgba(255,255,255,0.06);
+	border-radius: 16px;
+	padding: 24px;
+}
+/* Icono visual del calendario (columna izquierda, fila 1) */
+.cal-bridge-visual {
+	grid-column: 1;
+	grid-row: 1;
+	padding: 12px;
+	background: rgba(61,220,132,0.07);
+	border: 1px solid rgba(61,220,132,0.12);
+	border-radius: 12px;
+	color: var(--color-text-accent);
+	align-self: start;
+}
+/* Contenido textual (columna derecha, fila 1) */
+.cal-bridge-content { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; gap: 8px; }
+.cal-bridge-title   { font-size: 1rem; font-weight: 700; color: var(--color-text-primary); letter-spacing: -0.01em; }
+.cal-bridge-desc    { font-size: 0.80rem; color: rgba(255,255,255,0.35); line-height: 1.6; }
+
+/* Botón "Ir al calendario" */
+.btn-go-cal {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 8px 16px;
+	align-self: flex-start;
+	background: var(--color-green-primary);
+	border: none;
+	border-radius: 9px;
+	color: #050a08;
+	font-family: var(--font-sans);
+	font-size: 0.78rem;
+	font-weight: 700;
+	cursor: pointer;
+	margin-top: 4px;
+	box-shadow: 0 2px 12px rgba(61,220,132,0.25);
+	transition: all var(--duration-fast);
+}
+.btn-go-cal:hover { background: #4fe897; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(61,220,132,0.4); }
+
+/* Sección de próximas fechas límite (span de dos columnas, fila 2) */
+.cal-bridge-upcoming {
+	grid-column: 1 / -1;
+	grid-row: 2;
+	margin-top: 20px;
+	padding-top: 20px;
+	border-top: 1px solid rgba(255,255,255,0.05);
+}
+.upcoming-title {
+	font-size: 0.65rem;
+	font-weight: 700;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	color: rgba(255,255,255,0.2);
+	margin-bottom: 10px;
+}
+.upcoming-list { display: flex; flex-direction: column; gap: 4px; }
+
+/* Fila de una tarea próxima en la lista de fechas límite */
+.upcoming-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 9px 10px;
+	border-radius: 9px;
+	cursor: pointer;
+	transition: background var(--duration-fast);
+}
+.upcoming-row:hover { background: rgba(255,255,255,0.04); }
+
+/* Barra lateral de color según prioridad de la tarea */
+.up-side  { width: 2px; height: 28px; border-radius: 2px; flex-shrink: 0; }
+.up-info  { flex: 1; min-width: 0; }
+.up-name  { font-size: 0.78rem; font-weight: 500; color: rgba(255,255,255,0.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.up-date  { font-size: 0.63rem; color: rgba(255,255,255,0.25); font-family: var(--font-mono); }
+
+/* Badge de tiempo restante en la lista de próximas fechas */
+.up-badge {
+	font-size: 0.62rem;
+	font-weight: 700;
+	font-family: var(--font-mono);
+	padding: 2px 8px;
+	border-radius: 99px;
+	white-space: nowrap;
+}
+.badge-today  { background: rgba(61,220,132,0.1);   color: var(--color-green-primary); } /* Hoy: verde */
+.badge-soon   { background: rgba(251,191,36,0.1);   color: #fbbf24; }                   /* En menos de una semana: amarillo */
+.badge-urgent { background: rgba(255,100,100,0.1);  color: #ff8888; }                   /* Urgente (≤2 días): rojo */
+.badge-normal { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.25); }    /* Normal: gris */
+.upcoming-empty { font-size: 0.75rem; color: rgba(255,255,255,0.2); padding: 12px 0; }
+
+
+/* ════════════════════════════════════════════════
+ INPUTS Y FORMULARIOS
+ Estilos reutilizables para todos los campos de los modales
+════════════════════════════════════════════════ */
+.proj-input {
+	background: rgba(255,255,255,0.05);
+	border: 1px solid rgba(255,255,255,0.09);
+	border-radius: 9px;
+	color: var(--color-text-primary);
+	font-family: var(--font-sans);
+	font-size: 0.84rem;
+	padding: 9px 12px;
+	outline: none;
+	width: 100%;
+	transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+}
+/* Al enfocar un input, el borde se ilumina en verde con un halo suave */
+.proj-input:focus {
+	border-color: rgba(61,220,132,0.4);
+	box-shadow: 0 0 0 3px rgba(61,220,132,0.07);
+}
+.proj-input::placeholder { color: rgba(255,255,255,0.18); }
+.proj-input-lg  { font-size: 1rem; padding: 11px 14px; }  /* Input más grande para el título del modal */
+.proj-textarea  { resize: vertical; min-height: 72px; }   /* Textarea redimensionable verticalmente */
+.proj-select    { appearance: none; padding-right: 28px; cursor: pointer; } /* Select con estilo personalizado */
+
+/* Wrapper para select con la flecha personalizada posicionada encima */
+.select-wrap { position: relative; }
+.sel-caret   { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); pointer-events: none; color: rgba(255,255,255,0.2); }
+
+/* Grupo de formulario: label encima + input debajo */
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-lbl   { font-size: 0.67rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
+.form-opt   { font-weight: 400; letter-spacing: 0; text-transform: none; opacity: 0.6; } /* Modificador "opcional" en el label */
+/* Grid de 3 columnas para agrupar varios campos en una fila */
+.form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+
+/* ════════════════════════════════════════════════
+ MODALES (ventanas emergentes)
+ Overlay oscuro + tarjeta animada con contenido
+════════════════════════════════════════════════ */
+
+/* Fondo oscuro semitransparente que cubre toda la pantalla */
+.modal-overlay {
+	position: fixed;
+	inset: 0; /* Equivale a top:0, right:0, bottom:0, left:0 */
+	z-index: 200;
+	background: rgba(3, 7, 5, 0.75);
+	backdrop-filter: blur(12px); /* Desenfoca el contenido de fondo */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	opacity: 0;
+	pointer-events: none; /* No captura eventos cuando está cerrado */
+	transition: opacity 0.22s ease;
+}
+/* Al añadir la clase "open", el modal se hace visible e interactivo */
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+
+/* Tarjeta del modal: entra con una animación de escala y desplazamiento */
+.modal-card {
+	width: 100%;
+	max-width: 460px;
+	background: #0d1610;
+	border: 1px solid rgba(255,255,255,0.09);
+	border-radius: 20px;
+	box-shadow: 0 40px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(61,220,132,0.04);
+	overflow: hidden;
+	transform: translateY(16px) scale(0.97); /* Estado inicial (antes de abrir) */
+	transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); /* Animación con rebote */
+}
+/* Al abrir, la tarjeta sube a su posición natural */
+.modal-overlay.open .modal-card { transform: none; }
+.modal-card-lg { max-width: 540px; } /* Variante grande (modal de tarea) */
+.modal-card-xs { max-width: 380px; } /* Variante pequeña (modal de confirmación) */
+
+/* Cabecera del modal: eyebrow + título + botón de cerrar */
+.modal-card-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	padding: 22px 24px 16px;
+	border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.modal-card-title-group { display: flex; flex-direction: column; gap: 3px; }
+
+/* Texto pequeño sobre el título (ej: "NUEVO PROYECTO") */
+.modal-eyebrow {
+	font-size: 0.62rem;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--color-text-accent);
+}
+.modal-eyebrow-danger { color: var(--color-error); } /* Variante roja para acciones destructivas */
+
+/* Título principal del modal */
+.modal-card-title { font-size: 1.05rem; font-weight: 700; color: var(--color-text-primary); letter-spacing: -0.01em; }
+
+/* Botón "×" para cerrar el modal */
+.btn-modal-close {
+	width: 28px;
+	height: 28px;
+	border-radius: 8px;
+	background: rgba(255,255,255,0.05);
+	border: none;
+	color: rgba(255,255,255,0.35);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all var(--duration-fast);
+}
+.btn-modal-close:hover { background: rgba(255,255,255,0.1); color: var(--color-text-primary); }
+
+/* Cuerpo del modal: con scroll interno si el contenido supera 60% de la pantalla */
+.modal-card-body {
+	padding: 20px 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	max-height: 60vh;
+	overflow-y: auto;
+	scrollbar-width: none;
+}
+.modal-card-body::-webkit-scrollbar { display: none; }
+
+/* Footer del modal: botones de cancelar y confirmar */
+.modal-card-footer {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+	padding: 16px 24px;
+	border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Botón "Cancelar" (neutro, sin relleno) */
+.btn-cancel {
+	padding: 8px 16px;
+	background: none;
+	border: 1px solid rgba(255,255,255,0.08);
+	border-radius: 9px;
+	color: rgba(255,255,255,0.35);
+	font-family: var(--font-sans);
+	font-size: 0.82rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+}
+.btn-cancel:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.65); }
+
+/* Botón "Confirmar" (verde principal) */
+.btn-confirm {
+	padding: 8px 20px;
+	background: var(--color-green-primary);
+	border: none;
+	border-radius: 9px;
+	color: #050a08;
+	font-family: var(--font-sans);
+	font-size: 0.82rem;
+	font-weight: 700;
+	cursor: pointer;
+	box-shadow: 0 2px 12px rgba(61,220,132,0.25);
+	transition: all var(--duration-fast);
+}
+.btn-confirm:hover { background: #4fe897; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(61,220,132,0.4); }
+
+/* Botón "Eliminar" (rojo, para acciones destructivas) */
+.btn-delete {
+	padding: 8px 20px;
+	background: rgba(255,80,80,0.1);
+	border: 1px solid rgba(255,80,80,0.2);
+	border-radius: 9px;
+	color: var(--color-error);
+	font-family: var(--font-sans);
+	font-size: 0.82rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+}
+.btn-delete:hover { background: rgba(255,80,80,0.18); border-color: rgba(255,80,80,0.35); }
+
+/* Textos del modal de confirmación */
+.confirm-text { font-size: 0.86rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+.confirm-name { color: var(--color-text-primary); font-weight: 600; }  /* Nombre del elemento a eliminar */
+.confirm-warn { font-size: 0.73rem; color: var(--color-error); opacity: 0.7; margin-top: 6px; line-height: 1.5; } /* Advertencia secundaria */
+
+
+/* ════════════════════════════════════════════════
+ SPINNER DE CARGA y TOASTS (notificaciones)
+════════════════════════════════════════════════ */
+
+/* Spinner circular animado (borde superior en verde girando) */
+.spinner {
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	border: 2px solid rgba(255,255,255,0.08);
+	border-top-color: var(--color-green-primary); /* Solo el borde superior tiene el color verde */
+	animation: spin 600ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Contenedor de toasts: esquina inferior derecha */
+.toast-container {
+	position: fixed;
+	bottom: 22px;
+	right: 22px;
+	z-index: 400; /* Por encima de los modales */
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	pointer-events: none; /* El contenedor no captura eventos, solo las notificaciones individuales */
+}
+
+/* Notificación individual (toast) */
+.toast {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 16px;
+	pointer-events: all;
+	background: rgba(13,22,16,0.95);
+	border: 1px solid rgba(255,255,255,0.09);
+	border-radius: 12px;
+	box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+	font-size: 0.82rem;
+	color: var(--color-text-primary);
+	animation: toastIn 0.22s cubic-bezier(0.34,1.56,0.64,1); /* Entrada desde la derecha con rebote */
+}
+/* Animación de salida (la clase "out" se añade por JS antes de eliminar el elemento) */
+.toast.out { animation: toastOut 0.18s ease forwards; }
+
+/* Punto de color indicador del tipo de toast */
+.toast-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.toast.ok   .toast-dot { background: var(--color-green-primary); } /* Éxito: verde */
+.toast.err  .toast-dot { background: #ff6b6b; }                    /* Error: rojo */
+.toast.info .toast-dot { background: #60a5fa; }                    /* Información: azul */
+
+/* Animación de entrada del toast: entra deslizando desde la derecha */
+@keyframes toastIn  { from { opacity:0; transform:translateX(16px) scale(0.96); } to { opacity:1; transform:none; } }
+/* Animación de salida del toast: sube y desaparece */
+@keyframes toastOut { from { opacity:1; } to { opacity:0; transform:translateY(-4px); } }
+
+
+/* ════════════════════════════════════════════════
+ RESPONSIVE (pantallas pequeñas ≤ 880px)
+ En móvil, se apila todo en una sola columna y se ocultan elementos no esenciales
+════════════════════════════════════════════════ */
+@media (max-width: 880px) {
+	.proj-page         { grid-template-columns: 1fr; }   /* Una sola columna */
+	.proj-sidebar      { display: none; }                /* El sidebar se oculta */
+	.kanban-board      { grid-template-columns: 1fr; }   /* Kanban en columna única */
+	.members-section   { grid-template-columns: 1fr; }   /* Miembros: lista + panel apilados */
+	.form-row-3        { grid-template-columns: 1fr 1fr; } /* 3 columnas → 2 columnas */
+	.proj-header-stats { display: none; }               /* Stats del header se ocultan */
+	.cal-bridge        { grid-template-columns: 1fr; }   /* Calendario: una columna */
+	.cal-bridge-visual { display: none; }               /* Icono del calendario se oculta */
+	.cal-bridge-content  { grid-column: 1; }
+	.cal-bridge-upcoming { grid-column: 1; }
+}
+
+
+/* ════════════════════════════════════════════════
+ CUSTOM SELECT DROPDOWNS
+ Reemplaza los <select> nativos del navegador con un diseño personalizado
+════════════════════════════════════════════════ */
+
+/* Contenedor del custom select (posicionado relativamente para el dropdown) */
+.custom-select {
+	position: relative;
+	user-select: none; /* Evita que el texto se seleccione al hacer clic */
+}
+
+/* Botón que actúa como el campo visible del select */
+.custom-select-trigger {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 7px 10px;
+	background: rgba(255,255,255,0.04);
+	border: 1px solid rgba(255,255,255,0.09);
+	border-radius: 9px;
+	color: rgba(255,255,255,0.45);
+	font-family: var(--font-sans);
+	font-size: 0.78rem;
+	font-weight: 500;
+	cursor: pointer;
+	text-align: left;
+	transition: background 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+	white-space: nowrap;
+}
+.custom-select-trigger:hover {
+	background: rgba(255,255,255,0.07);
+	border-color: rgba(255,255,255,0.16);
+	color: rgba(255,255,255,0.75);
+}
+/* Estado abierto del trigger: borde verde con halo */
+.custom-select.open .custom-select-trigger {
+	background: rgba(255,255,255,0.06);
+	border-color: rgba(61,220,132,0.35);
+	box-shadow: 0 0 0 3px rgba(61,220,132,0.08);
+	color: var(--color-text-primary);
+}
+
+/* Variante para el trigger que parece un input de formulario */
+.custom-select-trigger-input {
+	padding: 9px 12px;
+	background: rgba(255,255,255,0.05);
+	border-color: rgba(255,255,255,0.09);
+	font-size: 0.84rem;
+	color: var(--color-text-primary);
+	border-radius: 9px;
+}
+.custom-select-trigger-input:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.16); }
+.custom-select.open .custom-select-trigger-input { border-color: rgba(61,220,132,0.4); box-shadow: 0 0 0 3px rgba(61,220,132,0.07); }
+
+/* Texto visible dentro del trigger (la opción seleccionada) */
+.custom-select-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+
+/* Flecha/caret que indica si el select está abierto o cerrado */
+.custom-select-caret {
+	flex-shrink: 0;
+	color: rgba(255,255,255,0.2);
+	transition: transform 220ms var(--ease-bounce), color 160ms ease;
+}
+/* Al abrir, la flecha rota 180° (apunta hacia arriba) */
+.custom-select.open .custom-select-caret { transform: rotate(180deg); color: var(--color-text-accent); }
+
+/* Panel desplegable de opciones (posición fija gestionada por JS) */
+.custom-select-dropdown {
+	position: fixed;
+	/* top y left son calculados por JS en _positionDropdown() */
+	background: #0b1410;
+	border: 1px solid rgba(255,255,255,0.11);
+	border-radius: 12px;
+	box-shadow: 0 20px 50px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.4), 0 0 0 1px rgba(61,220,132,0.05);
+	overflow-y: auto;
+	overflow-x: hidden;
+	scrollbar-width: none;
+	z-index: 9999; /* Por encima de todo, incluyendo modales */
+	opacity: 0;
+	transform: translateY(-6px) scale(0.97); /* Estado inicial (cerrado) */
+	pointer-events: none;
+	transform-origin: top center;
+	transition: opacity 170ms ease, transform 200ms var(--ease-bounce);
+	min-width: 200px;
+	max-height: 240px;
+}
+.custom-select-dropdown::-webkit-scrollbar { display: none; }
+/* Estado abierto: visible e interactivo */
+.custom-select.open .custom-select-dropdown { opacity: 1; transform: none; pointer-events: all; }
+/* Cuando abre hacia arriba, el origen de transformación cambia */
+.custom-select.open-up .custom-select-dropdown { transform-origin: bottom center; transform: translateY(6px) scale(0.97); }
+.custom-select.open-up.open .custom-select-dropdown { transform: none; }
+
+/* Opción individual dentro del dropdown */
+.custom-select-option {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	padding: 9px 14px;
+	font-family: var(--font-sans);
+	font-size: 0.81rem;
+	font-weight: 400;
+	color: rgba(255,255,255,0.5);
+	cursor: pointer;
+	border-bottom: 1px solid rgba(255,255,255,0.04);
+	transition: background 120ms ease, color 120ms ease, padding-left 120ms ease;
+	position: relative;
+	white-space: nowrap;
+}
+.custom-select-option:last-child { border-bottom: none; }
+/* Al hacer hover, la opción se desplaza ligeramente a la derecha */
+.custom-select-option:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.88); padding-left: 17px; }
+/* Opción seleccionada: fondo verde sutil */
+.custom-select-option.cs-selected { background: rgba(61,220,132,0.07); color: var(--color-text-accent); }
+/* Indicador visual (barra vertical verde) a la izquierda de la opción seleccionada */
+.custom-select-option.cs-selected::before {
+	content: "";
+	position: absolute;
+	left: 0; top: 20%; bottom: 20%;
+	width: 2px;
+	background: var(--color-green-primary);
+	border-radius: 0 2px 2px 0;
+}
+.custom-select-option.cs-selected:hover { background: rgba(61,220,132,0.11); padding-left: 17px; }
+
+/* Texto de descripción del rol en las opciones del selector de rol (ej: "Puede gestionar tareas") */
+.cs-role-hint {
+	margin-left: auto;
+	padding-left: 12px;
+	font-size: 0.62rem;
+	color: rgba(255,255,255,0.18);
+	font-family: var(--font-mono);
+	white-space: nowrap;
+}
+.custom-select-option:hover .cs-role-hint { color: rgba(255,255,255,0.32); }
+.custom-select-option.cs-selected .cs-role-hint { color: rgba(61,220,132,0.45); }
+
+/* Puntos de indicador de rol en las opciones */
+.cs-role-dot         { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.cs-role-member      { background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.2); }
+.cs-role-admin       { background: var(--color-green-primary); box-shadow: 0 0 6px rgba(61,220,132,0.6); }
+
+/* Puntos de indicador de prioridad en las opciones del selector de prioridad */
+.cs-prio-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cs-prio-HIGH { background: #ff6b6b; box-shadow: 0 0 5px rgba(255,107,107,0.5); }  /* Rojo */
+.cs-prio-MID  { background: #fbbf24; box-shadow: 0 0 5px rgba(251,191,36,0.4); }   /* Amarillo */
+.cs-prio-LOW  { background: #6ee7b7; box-shadow: 0 0 5px rgba(110,231,183,0.4); }  /* Verde */
+/* El brillo de los puntos aumenta al hacer hover en la opción */
+.custom-select-option:hover .cs-prio-HIGH { box-shadow: 0 0 9px rgba(255,107,107,0.75); }
+.custom-select-option:hover .cs-prio-MID  { box-shadow: 0 0 9px rgba(251,191,36,0.65); }
+.custom-select-option:hover .cs-prio-LOW  { box-shadow: 0 0 9px rgba(110,231,183,0.65); }
+/* También en el trigger cuando la opción está seleccionada */
+.custom-select-trigger .cs-prio-HIGH { box-shadow: 0 0 7px rgba(255,107,107,0.6); }
+.custom-select-trigger .cs-prio-MID  { box-shadow: 0 0 7px rgba(251,191,36,0.55); }
+.custom-select-trigger .cs-prio-LOW  { box-shadow: 0 0 7px rgba(110,231,183,0.55); }
+
+/* Avatar de usuario dentro de las opciones del selector de responsable */
+.cs-avatar {
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.60rem;
+	font-weight: 700;
+	color: #050a08;
+	flex-shrink: 0;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+}
+/* Avatar vacío (opción "Sin asignar"): borde punteado */
+.cs-avatar-empty {
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	background: rgba(255,255,255,0.04);
+	border: 1px dashed rgba(255,255,255,0.12);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: rgba(255,255,255,0.2);
+	flex-shrink: 0;
+}
+/* Los avatares en el trigger son ligeramente más pequeños */
+.custom-select-trigger .cs-avatar,
+.custom-select-trigger .cs-avatar-empty { width: 24px; height: 24px; font-size: 0.58rem; }
+
+/* Layout para opciones con avatar: avatar + columna de info (nombre + email) */
+.cs-user-info  { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.cs-user-name  { font-size: 0.82rem; font-weight: 500; color: rgba(255,255,255,0.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cs-user-email { font-size: 0.66rem; color: rgba(255,255,255,0.22); font-family: var(--font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Al hover e ítem seleccionado, el nombre cambia de color */
+.custom-select-option:hover .cs-user-name          { color: var(--color-text-primary); }
+.custom-select-option.cs-selected .cs-user-name   { color: var(--color-text-accent); }
+.custom-select-option.cs-selected .cs-user-email  { color: rgba(61,220,132,0.35); }
+
+/* Variante inline del custom select para el panel de invitación */
+.custom-select-inline .custom-select-trigger { border-radius: 9px; }
+
+
+/* ════════════════════════════════════════════════
+ BANNER INFORMATIVO DE ROL
+ Aparece en la pestaña de tareas cuando el usuario es solo MEMBER
+════════════════════════════════════════════════ */
+.role-info-banner {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	padding: 9px 14px;
+	background: rgba(255,255,255,0.025);
+	border: 1px solid rgba(255,255,255,0.07);
+	border-radius: 10px;
+	font-size: 0.73rem;
+	color: rgba(255,255,255,0.28);
+	line-height: 1.4;
+	flex-shrink: 0;
+}
+.role-info-banner svg    { flex-shrink: 0; color: rgba(255,255,255,0.2); }
+.role-info-banner strong { color: rgba(255,255,255,0.55); font-weight: 600; }
+
+
+/* ════════════════════════════════════════════════
+ MODAL DE TAREA
+ Diseño extendido para el formulario de crear/editar tareas
+════════════════════════════════════════════════ */
+.modal-task-card {
+	max-width: 580px;
+	position: relative;
+	overflow: visible; /* Permite que los dropdowns del custom-select sobresalgan del modal */
+}
+/* Cuerpo del modal de tarea con más altura máxima */
+.modal-task-card .modal-card-body {
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+	max-height: 72vh;
+	overflow-y: auto;
+	overflow-x: visible; /* Necesario para que el custom-select no quede cortado */
+	scrollbar-width: none;
+	padding: 22px 26px;
+}
+.modal-task-card .modal-card-body::-webkit-scrollbar { display: none; }
+
+/* ── Píldoras de tipo de tarea ─── */
+.task-type-pills {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+/* Píldora individual de tipo de tarea (Normal / Código / Revisión / Reunión / Doc) */
+.type-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	background: rgba(255,255,255,0.04);
+	border: 1px solid rgba(255,255,255,0.08);
+	border-radius: 8px;
+	color: rgba(255,255,255,0.35);
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+	white-space: nowrap;
+}
+.type-pill:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.65); border-color: rgba(255,255,255,0.14); }
+/* Píldora activa: borde y fondo verde */
+.type-pill.active { background: rgba(61,220,132,0.10); border-color: rgba(61,220,132,0.30); color: var(--color-text-accent); }
+.type-pill svg { flex-shrink: 0; }
+
+/* ── Hint de prioridad (calculado automáticamente desde la fecha límite) ── */
+.prio-hint {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	margin-top: 7px;
+	padding: 6px 10px;
+	background: rgba(255,255,255,0.03);
+	border: 1px solid rgba(255,255,255,0.07);
+	border-radius: 8px;
+	animation: fadeIn 200ms ease;
+}
+/* Animación de aparición del hint */
+@keyframes fadeIn { from { opacity:0; transform:translateY(-3px); } to { opacity:1; transform:none; } }
+.prio-hint-dot   { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; transition: background var(--duration-fast); }
+.prio-hint-label { font-size: 0.73rem; font-weight: 600; color: rgba(255,255,255,0.6); }
+/* El número de días restantes se alinea a la derecha del hint */
+.prio-hint-sub   { font-size: 0.68rem; color: rgba(255,255,255,0.25); font-family: var(--font-mono); margin-left: auto; }
+
+/* Grid de 2 columnas para agrupar campos en pares */
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+/* En el modal de tarea, la columna de fecha límite es ligeramente más estrecha */
+.modal-task-card .form-row-2 { grid-template-columns: 1.1fr 0.9fr; }
+
+/* Asegura que el modal de tarea no corte los dropdowns de custom-select que sobresalen */
+.modal-task-card { position: relative; }
+
+
+/* ════════════════════════════════════════════════
+ DATE PICKER PERSONALIZADO
+ Botón trigger + popover con calendario mensual
+════════════════════════════════════════════════ */
+
+/* El form-group necesita position:relative para que el popover se posicione correctamente */
+.form-group { position: relative; }
+
+/* ── Botón que actúa como campo de fecha ─── */
+.date-trigger {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	padding: 10px 13px;
+	background: rgba(255,255,255,0.04);
+	border: 1px solid rgba(255,255,255,0.09);
+	border-radius: 10px;
+	color: rgba(255,255,255,0.28);
+	font-family: var(--font-sans);
+	font-size: 0.84rem;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+	text-align: left;
+	position: relative;
+}
+.date-trigger:hover { border-color: rgba(255,255,255,0.16); background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.55); }
+/* Estado: calendario abierto */
+.date-trigger.dp-open { border-color: rgba(61,220,132,0.45); box-shadow: 0 0 0 3px rgba(61,220,132,0.07); color: var(--color-text-primary); }
+/* Estado: fecha seleccionada */
+.date-trigger.date-trigger-set { color: var(--color-text-primary); border-color: rgba(255,255,255,0.14); }
+
+/* Icono del calendario dentro del trigger */
+.date-trigger-icon { flex-shrink: 0; color: rgba(255,255,255,0.25); display: flex; align-items: center; transition: color var(--duration-fast); }
+/* Cuando hay fecha seleccionada, el icono se vuelve verde */
+.date-trigger.date-trigger-set .date-trigger-icon { color: var(--color-text-accent); }
+/* Texto de la fecha (o "Sin fecha") dentro del trigger */
+.date-trigger #date-trigger-label { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Botón "×" para limpiar la fecha seleccionada */
+.date-clear-btn {
+	display: none; /* Oculto por defecto, aparece cuando hay fecha seleccionada */
+	align-items: center;
+	justify-content: center;
+	width: 18px;
+	height: 18px;
+	background: rgba(255,255,255,0.07);
+	border: none;
+	border-radius: 5px;
+	color: rgba(255,255,255,0.3);
+	cursor: pointer;
+	flex-shrink: 0;
+	transition: all var(--duration-fast);
+	margin-left: auto;
+}
+.date-clear-btn:hover { background: rgba(255,80,80,0.15); color: var(--color-error); }
+
+/* Wrapper para el posicionamiento relativo del popover */
+.date-field-wrap { position: relative; }
+
+/* ── Popover del calendario ─── */
+.date-popover {
+	position: absolute;
+	top: calc(100% + 6px); /* 6px debajo del trigger */
+	left: 0;
+	z-index: 9999;
+	width: 268px;
+	background: #0b1410;
+	border: 1px solid rgba(255,255,255,0.11);
+	border-radius: 16px;
+	box-shadow: 0 20px 60px rgba(0,0,0,0.65), 0 0 0 1px rgba(61,220,132,0.04);
+	overflow: hidden;
+	animation: dpSlideIn 160ms var(--ease-bounce) both;
+}
+@keyframes dpSlideIn {
+	from { opacity:0; transform:translateY(-6px) scale(0.97); }
+	to   { opacity:1; transform:none; }
+}
+/* Cuando no hay espacio abajo, el popover se abre hacia arriba */
+.date-popover.dp-up { top: auto; bottom: calc(100% + 6px); animation-name: dpSlideUp; }
+@keyframes dpSlideUp {
+	from { opacity:0; transform:translateY(6px) scale(0.97); }
+	to   { opacity:1; transform:none; }
+}
+
+/* Cabecera del calendario: botón ← | "Mes Año" | botón → */
+.dp-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 13px 14px 10px;
+	border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+/* Botones de navegación entre meses (← y →) */
+.dp-nav {
+	background: rgba(255,255,255,0.04);
+	border: 1px solid rgba(255,255,255,0.07);
+	color: rgba(255,255,255,0.35);
+	font-size: 1rem;
+	width: 28px;
+	height: 28px;
+	border-radius: 8px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all var(--duration-fast);
+}
+.dp-nav:hover { background: rgba(255,255,255,0.09); color: var(--color-text-primary); border-color: rgba(255,255,255,0.14); }
+/* Etiqueta del mes y año */
+.dp-month-label { font-size: 0.88rem; font-weight: 600; color: var(--color-text-primary); letter-spacing: -0.01em; text-transform: capitalize; }
+
+/* Fila de días de la semana: L M X J V S D */
+.dp-weekdays {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	padding: 10px 10px 4px;
+	gap: 2px;
+}
+.dp-weekdays span { text-align: center; font-size: 0.60rem; font-weight: 700; color: rgba(255,255,255,0.18); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* Cuadrícula de días del mes */
+.dp-grid {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	gap: 3px;
+	padding: 4px 10px 10px;
+}
+/* Botón de día individual */
+.dp-day {
+	aspect-ratio: 1; /* Mantiene los botones cuadrados */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.78rem;
+	color: rgba(255,255,255,0.55);
+	background: none;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all var(--duration-fast);
+	font-family: var(--font-sans);
+	font-weight: 400;
+}
+.dp-blank { pointer-events: none; opacity: 0; } /* Celda vacía antes del primer día del mes */
+.dp-day:not(.dp-blank):hover { background: rgba(255,255,255,0.09); color: var(--color-text-primary); }
+/* Días pasados: apagados pero todavía hover disponible */
+.dp-day.dp-past { color: rgba(255,255,255,0.15); }
+.dp-day.dp-past:hover { color: rgba(255,255,255,0.3); }
+/* El día de hoy: fondo verde tenue con borde */
+.dp-day.dp-today { background: rgba(61,220,132,0.10); color: var(--color-text-accent); font-weight: 700; border: 1px solid rgba(61,220,132,0.2); }
+/* El día seleccionado: fondo verde sólido */
+.dp-day.dp-selected { background: var(--color-green-primary) !important; color: #050a08 !important; font-weight: 700; box-shadow: 0 2px 10px rgba(61,220,132,0.3); }
+/* Rango entre hoy y el día seleccionado: fondo verde muy tenue */
+.dp-day.dp-in-range       { background: rgba(61,220,132,0.06); border-radius: 0; }
+.dp-day.dp-in-range-start { border-radius: 8px 0 0 8px; } /* Primer día del rango */
+.dp-day.dp-in-range-end   { border-radius: 0 8px 8px 0; } /* Último día del rango */
+
+/* Footer del calendario: botones "Hoy" y "Limpiar" */
+.dp-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 9px 14px 13px;
+	border-top: 1px solid rgba(255,255,255,0.05);
+	gap: 8px;
+}
+/* Botón "Hoy" */
+.dp-today-btn {
+	background: rgba(61,220,132,0.08);
+	border: 1px solid rgba(61,220,132,0.20);
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--color-text-accent);
+	cursor: pointer;
+	border-radius: 7px;
+	padding: 5px 10px;
+	transition: all var(--duration-fast);
+}
+.dp-today-btn:hover { background: var(--color-green-faint); border-color: rgba(61,220,132,0.35); }
+/* Botón "Limpiar" */
+.dp-clear-btn {
+	background: none;
+	border: 1px solid rgba(255,255,255,0.06);
+	font-family: var(--font-sans);
+	font-size: 0.75rem;
+	color: rgba(255,255,255,0.25);
+	cursor: pointer;
+	border-radius: 7px;
+	padding: 5px 10px;
+	transition: all var(--duration-fast);
+	margin-left: auto; /* Empujado hacia la derecha */
+}
+.dp-clear-btn:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); }
+
+
+/* ════════════════════════════════════════════════
+ SECCIÓN DE TAREA DE CÓDIGO
+ Campos adicionales que aparecen cuando la tarea es de tipo "CODE"
+════════════════════════════════════════════════ */
+.code-task-section {
+	padding: 0;
+	background: none;
+	border: none;
+	border-radius: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	animation: none;
+}
+/* Título de la sección de código */
+.code-task-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.65rem;
+	font-weight: 700;
+	letter-spacing: 0.11em;
+	text-transform: uppercase;
+	color: rgba(61,220,132,0.55);
+	padding: 14px 0 10px;
+	border-top: 1px solid rgba(61,220,132,0.10);
+	margin-top: 4px;
+}
+.code-task-fields { display: flex; flex-direction: column; gap: 12px; }
+/* Inputs de código: fuente monoespaciada para URLs y nombres de branch */
+.code-input { font-family: var(--font-mono) !important; font-size: 0.82rem !important; letter-spacing: -0.01em; }
+/* Wrapper del input de repositorio con el icono de GitHub/link a la izquierda */
+.code-repo-wrap { position: relative; display: flex; align-items: center; }
+.code-repo-icon { position: absolute; left: 11px; color: rgba(255,255,255,0.18); display: flex; align-items: center; pointer-events: none; }
+.code-input-repo { padding-left: 32px !important; } /* Espacio para el icono */
+
+/* Chip de lenguaje de programación en las tarjetas del kanban */
+.code-lang-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 3px;
+	font-family: var(--font-mono);
+	font-size: 0.60rem;
+	font-weight: 500;
+	padding: 2px 6px;
+	border-radius: 5px;
+	background: rgba(99,179,237,0.10); /* Azul tenue */
+	color: #63b3ed;
+	border: 1px solid rgba(99,179,237,0.15);
+}
+
+
+/* ════════════════════════════════════════════════
+ BADGES DE TIPO DE TAREA en las tarjetas del Kanban
+════════════════════════════════════════════════ */
+.task-type-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 0.60rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	padding: 2px 7px;
+	border-radius: 6px;
+	border: 1px solid transparent;
+}
+.type-NORMAL  { display: none; }  /* Las tareas normales no muestran badge de tipo */
+.type-CODE    { background: rgba(99,179,237,0.10);  color: #63b3ed; border-color: rgba(99,179,237,0.18); }   /* Azul */
+.type-REVIEW  { background: rgba(154,117,234,0.10); color: #9a75ea; border-color: rgba(154,117,234,0.18); }  /* Morado */
+.type-MEETING { background: rgba(251,191,36,0.10);  color: #fbbf24; border-color: rgba(251,191,36,0.18); }   /* Amarillo */
+.type-DOC     { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.38); border-color: rgba(255,255,255,0.08); } /* Gris */

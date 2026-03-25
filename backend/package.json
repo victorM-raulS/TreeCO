@@ -1,0 +1,26 @@
+{
+  "name": "treeco",
+  "version": "1.0.0",
+  "description": "**TreeCO** es una aplicación de escritorio desarrollada en **Java** que permite a los usuarios organizar su flujo de trabajo mediante la gestión de proyectos y tareas. Este proyecto ha sido desarrollado como parte del aprendizaje en el primer año de **DAW (Desarrollo de Aplicaciones Web)**, enfocándose en la aplicación de la Programación Orientada a Objetos (POO) y el diseño de interfaces modernas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/personalusevictor/TaskFlow.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/personalusevictor/TaskFlow/issues"
+  },
+  "homepage": "https://github.com/personalusevictor/TaskFlow#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0"
+  }
+}

@@ -1,0 +1,75 @@
+# Compilados de Java
+*.class
+
+# Logs
+*.log
+
+# Ficheros temporales del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos generados por VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Carpetas de binarios (si las usáis)
+bin/
+out/
+target/
+build/
+
+# Archivos de configuración del IDE (por si abrís el repo con otros)
+*.iml
+.idea/
+
+# Backup / temporales de editores
+*~
+*.swp
+*.swo
+
+# Configuración específica de OS / editor
+.vscode-test/
+
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+.cursor
+
+### Node ###
+node_modules
+.env
+dist
+build
+
+.cursor

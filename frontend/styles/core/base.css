@@ -1,0 +1,42 @@
+*,
+*::before,
+*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 80%, rgba(20,60,35,0.55) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(15,45,28,0.45) 0%, transparent 60%),
+    var(--color-bg-deep);
+  color: var(--color-text-primary);
+  height: 100vh;
+  overflow: hidden;
+  display: block;
+}
+
+/* Dashboard & Tasks — scrollable pages */
+main,
+.tasksPage {
+  padding-top: 56px;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Calendar & Projects — full-height grids, no scroll on outer container */
+.cal-page {
+  height: 100vh;
+  padding-top: 30px;
+}
+
+.proj-page {
+  height: 100vh;
+  padding-top: 0px;
+}
+
+@media (max-width: 600px) {
+  main, .tasksPage      { padding-top: 52px; }
+  .cal-page             { padding-top: 30px; }
+}

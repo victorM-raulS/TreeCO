@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TreeCO — Autenticación</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./assets/img/favicon/TreeCO.svg" />
+    <link rel="apple-touch-icon" href="./assets/img/favicon/TreeCO.svg" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="./styles/core/root.css" />
+    <link rel="stylesheet" href="./styles/pages/auth.css" />
+</head>
+
+<body>
+
+    <!-- ── Background Scene ─────────────────────── -->
+    <div class="bg-scene" aria-hidden="true">
+        <div class="bg-gradient"></div>
+        <div class="bg-noise"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- ── Auth Container ───────────────────────── -->
+    <main class="auth-container">
+
+        <!-- Logo -->
+        <div class="logo-wrap" role="banner">
+            <img src="./assets/img/favicon/TreeCO.svg" alt="TreeCO logo" class="logo-img" width="40" height="40"
+                draggable="false" />
+            <span class="logo-name">Tree<span>CO</span></span>
+        </div>
+
+        <!-- Mobile Tabs (hidden on desktop) -->
+        <div class="mobile-toggle" role="tablist" aria-label="Modo de acceso">
+            <button class="mobile-tab active" data-mode="login" role="tab" aria-selected="true">Iniciar Sesión</button>
+            <button class="mobile-tab" data-mode="register" role="tab" aria-selected="false">Registrarse</button>
+        </div>
+
+        <!-- Glass Card -->
+        <div class="auth-card" role="region" aria-label="Formulario de autenticación">
+
+            <div class="panels-wrapper" id="panels-wrapper">
+
+                <!-- ══ PANEL: LOGIN ════════════════════════ -->
+                <section class="panel" id="panel-login" aria-label="Iniciar sesión">
+                    <div class="form-content">
+
+                        <div class="form-header">
+                            <h1 class="form-title">Iniciar sesión</h1>
+                            <p class="form-subtitle">Accede a tu espacio de trabajo</p>
+                        </div>
+
+                        <!-- Error Banner -->
+                        <div class="error-banner" id="login-error" role="alert" aria-live="polite">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span class="banner-text"></span>
+                        </div>
+
+                        <form id="form-login" novalidate autocomplete="on">
+
+                            <!-- Email -->
+                            <div class="input-group">
+                                <label class="input-label" for="login-email">Email</label>
+                                <div class="input-wrap">
+                                    <span class="input-icon" aria-hidden="true">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path
+                                                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                            </path>
+                                            <polyline points="22,6 12,13 2,6"></polyline>
+                                        </svg>
+                                    </span>
+                                    <input type="email" id="login-email" name="email" class="input-field"
+                                        placeholder="usuario@email.com" autocomplete="email" aria-required="true"
+                                        aria-describedby="login-email-error" />
+                                </div>
+                                <span class="field-error" id="login-email-error" role="alert"></span>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="input-group">
+                                <label class="input-label" for="login-password">Contraseña</label>
+                                <div class="input-wrap">
+                                    <span class="input-icon" aria-hidden="true">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                        </svg>
+                                    </span>
+                                    <input type="password" id="login-password" name="password" class="input-field"
+                                        placeholder="••••••••" autocomplete="current-password" aria-required="true"
+                                        aria-describedby="login-password-error" />
+                                    <button type="button" class="btn-toggle-pass" data-target="login-password"
+                                        aria-label="Mostrar/ocultar contraseña">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <span class="field-error" id="login-password-error" role="alert"></span>
+                            </div>
+
+                            <a href="./#" class="link-forgot">¿Olvidaste tu contraseña?</a>
+
+                            <button type="submit" class="btn-submit" id="btn-login-submit">
+                                <div class="btn-spinner" aria-hidden="true"></div>
+                                <span class="btn-label">Entrar</span>
+                            </button>
+
+                        </form>
+
+                    </div>
+                </section>
+
+                <!-- ══ PANEL: REGISTER ═════════════════════ -->
+                <section class="panel" id="panel-register" aria-label="Crear cuenta">
+                    <div class="form-content">
+
+                        <div class="form-header">
+                            <h2 class="form-title">Crear cuenta</h2>
+                            <p class="form-subtitle">Únete a TreeCO hoy</p>
+                        </div>
+
+                        <!-- Error Banner -->
+                        <div class="error-banner" id="register-error" role="alert" aria-live="polite">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <span class="banner-text"></span>
+                        </div>
+
+                        <form id="form-register" novalidate autocomplete="on">
+
+                            <!-- Username -->
+                            <div class="input-group">
+                                <label class="input-label" for="register-username">Nombre de usuario</label>
+                                <div class="input-wrap">
+                                    <span class="input-icon" aria-hidden="true">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </span>
+                                    <input type="text" id="register-username" name="username" class="input-field"
+                                        placeholder="Tu nombre" autocomplete="username" aria-required="true"
+                                        aria-describedby="register-username-error" />
+                                </div>
+                                <span class="field-error" id="register-username-error" role="alert"></span>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="input-group">
+                                <label class="input-label" for="register-email">Email</label>
+                                <div class="input-wrap">
+                                    <span class="input-icon" aria-hidden="true">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path
+                                                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                            </path>
+                                            <polyline points="22,6 12,13 2,6"></polyline>
+                                        </svg>
+                                    </span>
+                                    <input type="email" id="register-email" name="email" class="input-field"
+                                        placeholder="usuario@email.com" autocomplete="email" aria-required="true"
+                                        aria-describedby="register-email-error" />
+                                </div>
+                                <span class="field-error" id="register-email-error" role="alert"></span>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="input-group">
+                                <label class="input-label" for="register-password">Contraseña</label>
+                                <div class="input-wrap">
+                                    <span class="input-icon" aria-hidden="true">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                        </svg>
+                                    </span>
+                                    <input type="password" id="register-password" name="password" class="input-field"
+                                        placeholder="Mín. 8 caracteres" autocomplete="new-password" aria-required="true"
+                                        aria-describedby="register-password-error" />
+                                    <button type="button" class="btn-toggle-pass" data-target="register-password"
+                                        aria-label="Mostrar/ocultar contraseña">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <span class="field-error" id="register-password-error" role="alert"></span>
+                            </div>
+
+                            <button type="submit" class="btn-submit" id="btn-register-submit">
+                                <div class="btn-spinner" aria-hidden="true"></div>
+                                <span class="btn-label">Crear cuenta</span>
+                            </button>
+
+                        </form>
+
+                    </div>
+                </section>
+
+                <!-- ══ SLIDING GLASS OVERLAY ═══════════════ -->
+                <div class="slider-overlay" id="slider-overlay" aria-hidden="true">
+                    <div class="overlay-inner" id="overlay-inner">
+                        <div class="overlay-content">
+                            <div class="overlay-orb-decor" id="overlay-icon" aria-hidden="true">🌱</div>
+                            <span class="overlay-eyebrow" id="overlay-eyebrow">¿Primera vez?</span>
+                            <h3 class="overlay-title" id="overlay-title">Empieza a crecer</h3>
+                            <p class="overlay-desc" id="overlay-desc">
+                                Crea una cuenta y gestiona tus proyectos con TreeCO.
+                            </p>
+                            <button class="btn-submit" id="overlay-btn" type="button"
+                                style="margin-top: 0; max-width: 180px;">
+                                <span class="btn-label">Crear cuenta</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /panels-wrapper -->
+
+        </div><!-- /auth-card -->
+
+    </main>
+
+    <!-- Version badge -->
+    <div class="version-badge" aria-hidden="true">TreeCO v1.0</div>
+
+    <!-- ── MODAL: Verificación de email (registro) ── -->
+    <div class="modal-backdrop" id="modal-verify-backdrop" role="dialog" aria-modal="true"
+        aria-labelledby="modal-verify-title">
+        <div class="modal">
+
+            <button class="modal-close" id="modal-verify-close" aria-label="Cerrar">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="modal-steps" aria-hidden="true">
+                <div class="modal-step-dot active" id="vdot-1"></div>
+                <div class="modal-step-dot" id="vdot-2"></div>
+            </div>
+
+            <!-- Step 1: código -->
+            <div class="modal-step-panel active" id="vstep-1">
+                <div class="modal-header">
+                    <div class="modal-icon" aria-hidden="true">📬</div>
+                    <h2 class="modal-title" id="modal-verify-title">Verifica tu email</h2>
+                    <p class="modal-subtitle">Hemos enviado un código de 6 dígitos a<br><strong
+                            id="verify-email-display"></strong></p>
+                </div>
+
+                <div class="modal-error" id="verify-error" role="alert" aria-live="polite">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span class="banner-text"></span>
+                </div>
+
+                <div class="code-input-group">
+                    <div class="code-inputs" id="verify-code-inputs" role="group" aria-label="Código de verificación">
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 1" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 2" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 3" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 4" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 5" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 6" />
+                    </div>
+                    <div class="resend-row">
+                        <span>¿No lo recibiste?</span>
+                        <button class="btn-resend" id="btn-verify-resend" type="button" disabled>Reenviar</button>
+                        <span class="resend-timer" id="verify-resend-timer">en 30s</span>
+                    </div>
+                </div>
+
+                <button class="btn-submit" id="btn-verify-confirm" type="button" style="margin-top:0;">
+                    <div class="btn-spinner" aria-hidden="true"></div>
+                    <span class="btn-label">Confirmar código</span>
+                </button>
+            </div>
+
+            <!-- Step 2: éxito -->
+            <div class="modal-step-panel" id="vstep-2">
+                <div class="modal-success">
+                    <div class="success-ring" id="verify-success-ring">
+                        <svg viewBox="0 0 60 60">
+                            <circle class="track" cx="30" cy="30" r="27" />
+                            <circle class="fill" cx="30" cy="30" r="27" />
+                        </svg>
+                        <div class="success-check">🌿</div>
+                    </div>
+                    <p class="success-title">¡Cuenta creada!</p>
+                    <p class="success-desc">Tu email ha sido verificado.<br>Ya puedes iniciar sesión.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── MODAL: Recuperación de contraseña ── -->
+    <div class="modal-backdrop" id="modal-reset-backdrop" role="dialog" aria-modal="true"
+        aria-labelledby="modal-reset-title">
+        <div class="modal">
+
+            <button class="modal-close" id="modal-reset-close" aria-label="Cerrar">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+
+            <div class="modal-steps" aria-hidden="true">
+                <div class="modal-step-dot active" id="rdot-1"></div>
+                <div class="modal-step-dot" id="rdot-2"></div>
+                <div class="modal-step-dot" id="rdot-3"></div>
+            </div>
+
+            <!-- Step 1: email -->
+            <div class="modal-step-panel active" id="rstep-1">
+                <div class="modal-header">
+                    <div class="modal-icon" aria-hidden="true">🔑</div>
+                    <h2 class="modal-title" id="modal-reset-title">Recuperar contraseña</h2>
+                    <p class="modal-subtitle">Introduce tu email y te enviaremos un código para restablecer tu
+                        contraseña.</p>
+                </div>
+
+                <div class="modal-error" id="reset-error-1" role="alert" aria-live="polite">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span class="banner-text"></span>
+                </div>
+
+                <div class="input-group" style="padding-top:0;">
+                    <label class="input-label" for="reset-email">Email</label>
+                    <div class="input-wrap">
+                        <span class="input-icon" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <input type="email" id="reset-email" class="input-field" placeholder="usuario@email.com"
+                            autocomplete="email" />
+                    </div>
+                </div>
+
+                <button class="btn-submit" id="btn-reset-send" type="button" style="margin-top:0;">
+                    <div class="btn-spinner" aria-hidden="true"></div>
+                    <span class="btn-label">Enviar código</span>
+                </button>
+            </div>
+
+            <!-- Step 2: código -->
+            <div class="modal-step-panel" id="rstep-2">
+                <div class="modal-header">
+                    <div class="modal-icon" aria-hidden="true">📩</div>
+                    <h2 class="modal-title">Introduce el código</h2>
+                    <p class="modal-subtitle">Hemos enviado un código de 6 dígitos a<br><strong
+                            id="reset-email-display"></strong></p>
+                </div>
+
+                <div class="modal-error" id="reset-error-2" role="alert" aria-live="polite">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span class="banner-text"></span>
+                </div>
+
+                <div class="code-input-group">
+                    <div class="code-inputs" id="reset-code-inputs" role="group" aria-label="Código de verificación">
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 1" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 2" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 3" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 4" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 5" />
+                        <input class="code-digit" type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 6" />
+                    </div>
+                    <div class="resend-row">
+                        <span>¿No lo recibiste?</span>
+                        <button class="btn-resend" id="btn-reset-resend" type="button" disabled>Reenviar</button>
+                        <span class="resend-timer" id="reset-resend-timer">en 30s</span>
+                    </div>
+                </div>
+
+                <button class="btn-submit" id="btn-reset-validate" type="button" style="margin-top:0;">
+                    <div class="btn-spinner" aria-hidden="true"></div>
+                    <span class="btn-label">Verificar código</span>
+                </button>
+            </div>
+
+            <!-- Step 3: nueva contraseña -->
+            <div class="modal-step-panel" id="rstep-3">
+                <div class="modal-header">
+                    <div class="modal-icon" aria-hidden="true">🔒</div>
+                    <h2 class="modal-title">Nueva contraseña</h2>
+                    <p class="modal-subtitle">Elige una contraseña segura para tu cuenta.</p>
+                </div>
+
+                <div class="modal-error" id="reset-error-3" role="alert" aria-live="polite">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span class="banner-text"></span>
+                </div>
+
+                <div class="input-group" style="padding-top:0;">
+                    <label class="input-label" for="reset-new-password">Nueva contraseña</label>
+                    <div class="input-wrap">
+                        <span class="input-icon" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                        <input type="password" id="reset-new-password" class="input-field"
+                            placeholder="Mín. 8 caracteres" autocomplete="new-password" />
+                        <button type="button" class="btn-toggle-pass" data-target="reset-new-password"
+                            aria-label="Mostrar/ocultar contraseña">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="reset-strength" data-strength="0">
+                        <div class="strength-bar">
+                            <div class="strength-segment"></div>
+                            <div class="strength-segment"></div>
+                            <div class="strength-segment"></div>
+                            <div class="strength-segment"></div>
+                        </div>
+                        <span class="strength-label" id="reset-strength-label">Introduce una contraseña</span>
+                    </div>
+                </div>
+
+                <button class="btn-submit" id="btn-reset-confirm" type="button" style="margin-top:0;">
+                    <div class="btn-spinner" aria-hidden="true"></div>
+                    <span class="btn-label">Cambiar contraseña</span>
+                </button>
+            </div>
+
+            <!-- Step 4: éxito -->
+            <div class="modal-step-panel" id="rstep-4">
+                <div class="modal-success">
+                    <div class="success-ring" id="reset-success-ring">
+                        <svg viewBox="0 0 60 60">
+                            <circle class="track" cx="30" cy="30" r="27" />
+                            <circle class="fill" cx="30" cy="30" r="27" />
+                        </svg>
+                        <div class="success-check">✅</div>
+                    </div>
+                    <p class="success-title">¡Contraseña actualizada!</p>
+                    <p class="success-desc">Tu contraseña ha sido cambiada.<br>Ya puedes iniciar sesión con ella.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="./scripts/core/auth.js"></script>
+
+</body>
+
+</html>

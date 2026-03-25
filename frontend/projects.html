@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TreeCO — Proyectos</title>
+    <link rel="icon" type="image/png" href="./assets/img/favicon/TreeCO.svg" />
+    <link rel="apple-touch-icon" href="./assets/img/favicon/TreeCO.svg" />
+    <link rel="stylesheet" href="./styles/core/root.css" />
+    <link rel="stylesheet" href="./styles/core/base.css" />
+    <link rel="stylesheet" href="./styles/pages/projects.css" />
+    <link rel="stylesheet" href="./components/header/header.css" />
+    <script src="./components/header/header-component.js" defer></script>
+</head>
+
+<body>
+    <header-component></header-component>
+
+    <div class="proj-page">
+
+        <!-- ════════════════════════════════
+         SIDEBAR
+    ════════════════════════════════ -->
+        <aside class="proj-sidebar">
+            <div class="sidebar-top">
+                <span class="sidebar-label">Proyectos</span>
+                <button class="btn-icon-round" id="btn-new-project" title="Nuevo proyecto">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M6 1V11M1 6H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="sidebar-search">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                    <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4" />
+                    <path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                </svg>
+                <input type="text" id="sidebar-search" placeholder="Buscar proyecto…" autocomplete="off" />
+            </div>
+
+            <div class="project-list" id="project-list">
+                <div class="sidebar-loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <span id="proj-count-footer"></span>
+            </div>
+        </aside>
+
+        <!-- ════════════════════════════════
+         MAIN — vacío
+    ════════════════════════════════ -->
+        <main class="proj-main">
+            <div class="proj-empty" id="proj-empty">
+                <div class="proj-empty-art">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                        <rect x="8" y="14" width="48" height="36" rx="8" stroke="currentColor" stroke-width="1.5"
+                            stroke-dasharray="5 4" opacity="0.25" />
+                        <path d="M22 28h20M22 34h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            opacity="0.3" />
+                        <circle cx="32" cy="32" r="14" stroke="currentColor" stroke-width="1" opacity="0.08" />
+                    </svg>
+                </div>
+                <h2 class="proj-empty-title">Sin proyecto seleccionado</h2>
+                <p class="proj-empty-sub">Elige uno del panel izquierdo o crea uno nuevo</p>
+                <button class="btn-empty-create" id="btn-empty-create">
+                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                        <path d="M6 1V11M1 6H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                    Nuevo proyecto
+                </button>
+            </div>
+
+            <!-- ── DETALLE ── -->
+            <div class="proj-detail" id="proj-detail" style="display:none">
+
+                <!-- HEADER DEL PROYECTO -->
+                <header class="proj-header">
+                    <div class="proj-header-left">
+                        <div class="proj-title-row">
+                            <div class="proj-color-pill" id="detail-dot"></div>
+                            <h1 class="proj-title" id="detail-name"></h1>
+                            <button class="btn-inline-edit" id="btn-rename-proj" title="Renombrar proyecto">
+                                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                                    <path d="M9.5 2.5L11.5 4.5L5 11H3V9L9.5 2.5Z" stroke="currentColor"
+                                        stroke-width="1.4" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="proj-description" id="detail-desc"></p>
+                    </div>
+
+                    <div class="proj-header-stats" id="proj-header-stats">
+                        <!-- Renderizado por JS -->
+                    </div>
+
+          <div class="proj-header-actions">
+            <button class="btn-ghost-sm btn-home" id="btn-go-home" title="Volver a pantalla principal">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M2 7L7 2L12 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3.5 5.5V11.5H6V9h2v2.5h2.5V5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Inicio
+            </button>
+            <button class="btn-ghost-sm" id="btn-delete-proj">
+              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                <path d="M2 4h10M5 4V2.5a.5.5 0 01.5-.5h3a.5.5 0 01.5.5V4M3 4l.8 7.2A1 1 0 004.8 12h4.4a1 1 0 001-.8L11 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Eliminar
+            </button>
+          </div>
+        </header>
+
+                <!-- BARRA DE PROGRESO -->
+                <div class="proj-progress-section">
+                    <div class="progress-top">
+                        <span class="progress-label-text">Progreso del proyecto</span>
+                        <span class="progress-value" id="detail-pct">0%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="detail-progress" style="width:0%"></div>
+                    </div>
+                    <div class="progress-breakdown" id="progress-breakdown"></div>
+                </div>
+
+                <!-- TABS -->
+                <div class="proj-tabs">
+                    <nav class="tabs-nav">
+                        <button class="tab-pill active" data-tab="tasks">
+                            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                                <rect x="2" y="2" width="10" height="10" rx="3" stroke="currentColor"
+                                    stroke-width="1.3" />
+                                <path d="M5 7l1.5 1.5L9 5" stroke="currentColor" stroke-width="1.3"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Tareas
+                            <span class="tab-count" id="tc-tasks">0</span>
+                        </button>
+                        <button class="tab-pill" data-tab="members">
+                            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                                <circle cx="5" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3" />
+                                <path d="M1 12c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" stroke-width="1.3"
+                                    stroke-linecap="round" />
+                                <circle cx="11" cy="5" r="1.8" stroke="currentColor" stroke-width="1.2" />
+                                <path d="M13 11c0-1.7-1-3-2.5-3" stroke="currentColor" stroke-width="1.2"
+                                    stroke-linecap="round" />
+                            </svg>
+                            Miembros
+                            <span class="tab-count" id="tc-members">0</span>
+                        </button>
+                        <button class="tab-pill" data-tab="calendar">
+                            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                                <rect x="2" y="3" width="10" height="9" rx="2" stroke="currentColor"
+                                    stroke-width="1.3" />
+                                <path d="M2 6h10M5 2v2M9 2v2" stroke="currentColor" stroke-width="1.3"
+                                    stroke-linecap="round" />
+                            </svg>
+                            Calendario
+                        </button>
+                    </nav>
+
+          <!-- ── TAB TAREAS ── -->
+          <div class="tab-pane active" id="tab-tasks">
+            <div class="tasks-controls">
+              <div class="task-search-wrap">
+                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                  <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+                  <path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+                <input type="text" id="task-search" placeholder="Buscar tarea…" autocomplete="off" />
+              </div>
+              <div class="task-filters" id="tasks-filters">
+                <button class="filter-chip active" data-filter="all">Todo</button>
+                <button class="filter-chip" data-filter="IN_PROGRESS">En curso</button>
+                <button class="filter-chip" data-filter="COMPLETED">Hechas</button>
+                <button class="filter-chip" data-filter="EXPIRED">Vencidas</button>
+              </div>
+              <div class="task-sort-wrap">
+                <div class="custom-select" id="task-sort-select" data-value="none">
+                  <button class="custom-select-trigger" type="button">
+                    <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+                      <path d="M2 4h10M4 7h6M6 10h2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                    <span class="custom-select-label">Ordenar…</span>
+                    <svg class="custom-select-caret" width="8" height="8" viewBox="0 0 10 10" fill="none">
+                      <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                  <div class="custom-select-dropdown">
+                    <div class="custom-select-option cs-selected" data-value="none">Sin ordenar</div>
+                    <div class="custom-select-option" data-value="priority">
+                      <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M6 1v6M6 9.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                      Por prioridad
+                    </div>
+                    <div class="custom-select-option" data-value="deadline">
+                      <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><rect x="1.5" y="2" width="9" height="8" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5h9M4 1v2M8 1v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                      Por fecha límite
+                    </div>
+                    <div class="custom-select-option" data-value="name">
+                      <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 3h8M2 6h5M2 9h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                      Por nombre
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn-add-task-main" id="btn-add-task">
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                  <path d="M6 1V11M1 6H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+                Nueva tarea
+              </button>
+            </div>
+
+                        <div class="kanban-board" id="kanban-board"></div>
+                    </div>
+
+                    <!-- ── TAB MIEMBROS ── -->
+                    <div class="tab-pane" id="tab-members">
+                        <div class="members-section">
+                            <div class="members-list" id="members-grid"></div>
+
+                            <div class="invite-panel">
+                                <div class="invite-panel-header">
+                                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                                        <circle cx="7" cy="6" r="3" stroke="currentColor" stroke-width="1.3" />
+                                        <path d="M2 14c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor"
+                                            stroke-width="1.3" stroke-linecap="round" />
+                                        <path d="M12 5v4M10 7h4" stroke="currentColor" stroke-width="1.3"
+                                            stroke-linecap="round" />
+                                    </svg>
+                                    Invitar al proyecto
+                                </div>
+
+                <!-- Buscador -->
+                <div class="invite-search-wrap">
+                  <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                    <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4"/>
+                    <path d="M10 10L13 13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  </svg>
+                  <input
+                    type="text"
+                    id="invite-search"
+                    placeholder="Buscar por nombre o email…"
+                    autocomplete="off"
+                  />
+                  <div class="invite-search-spinner" id="invite-spinner" style="display:none">
+                    <div class="spinner"></div>
+                  </div>
+                </div>
+
+                                <!-- Dropdown resultados -->
+                                <div class="invite-results" id="invite-results" style="display:none"></div>
+
+                <!-- Preview del usuario seleccionado -->
+                <div class="invite-selected" id="invite-selected" style="display:none">
+                  <div class="invite-selected-user" id="invite-selected-user"></div>
+                  <div class="invite-role-row">
+                    <div class="custom-select custom-select-inline" id="member-role-select" data-value="MEMBER" style="flex:1">
+                      <button class="custom-select-trigger" type="button">
+                        <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 12c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                        <span class="custom-select-label">Miembro</span>
+                        <svg class="custom-select-caret" width="8" height="8" viewBox="0 0 10 10" fill="none">
+                          <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                        </svg>
+                      </button>
+                      <div class="custom-select-dropdown">
+                        <div class="custom-select-option cs-selected" data-value="MEMBER">
+                          <span class="cs-role-dot cs-role-member"></span>
+                          Miembro
+                          <span class="cs-role-hint">Solo puede completar tareas</span>
+                        </div>
+                        <div class="custom-select-option" data-value="ADMIN">
+                          <span class="cs-role-dot cs-role-admin"></span>
+                          Administrador
+                          <span class="cs-role-hint">Gestiona miembros y tareas</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="btn-invite-confirm" id="btn-add-member">
+                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      Invitar
+                    </button>
+                  </div>
+                </div>
+
+                                <p class="invite-note">El usuario verá el proyecto y sus tareas al instante.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── TAB CALENDARIO ── -->
+                    <div class="tab-pane" id="tab-calendar">
+                        <div class="cal-bridge">
+                            <div class="cal-bridge-visual">
+                                <div class="cal-bridge-icon">
+                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                        <rect x="3" y="5" width="26" height="22" rx="5" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                        <path d="M3 11h26" stroke="currentColor" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <path d="M10 3v4M22 3v4" stroke="currentColor" stroke-width="1.5"
+                                            stroke-linecap="round" />
+                                        <rect x="8" y="16" width="4" height="3" rx="1" fill="currentColor"
+                                            opacity="0.5" />
+                                        <rect x="14" y="16" width="4" height="3" rx="1" fill="currentColor"
+                                            opacity="0.3" />
+                                        <rect x="20" y="16" width="4" height="3" rx="1" fill="currentColor"
+                                            opacity="0.7" />
+                                        <rect x="8" y="21" width="4" height="3" rx="1" fill="currentColor"
+                                            opacity="0.3" />
+                                        <rect x="14" y="21" width="4" height="3" rx="1" fill="currentColor"
+                                            opacity="0.6" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="cal-bridge-content">
+                                <h3 class="cal-bridge-title">Calendario del proyecto</h3>
+                                <p class="cal-bridge-desc">Visualiza todas las fechas límite de este proyecto en el
+                                    calendario global, con filtro aplicado automáticamente.</p>
+                                <button class="btn-go-cal" id="btn-go-calendar">
+                                    Abrir en Calendario
+                                    <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                                        <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="cal-bridge-upcoming" id="cal-redirect-upcoming"></div>
+                        </div>
+                    </div>
+
+                </div><!-- /proj-tabs -->
+            </div><!-- /proj-detail -->
+        </main>
+    </div>
+
+    <!-- ════════════ MODAL PROYECTO ════════════ -->
+    <div class="modal-overlay" id="modal-project">
+        <div class="modal-card">
+            <div class="modal-card-header">
+                <div class="modal-card-title-group">
+                    <span class="modal-eyebrow" id="modal-proj-eyebrow">Nuevo proyecto</span>
+                    <h3 class="modal-card-title" id="modal-proj-title">¿Cómo se llama?</h3>
+                </div>
+                <button class="btn-modal-close" id="modal-proj-close">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M1.5 1.5L10.5 10.5M10.5 1.5L1.5 10.5" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-card-body">
+                <div class="form-group">
+                    <label class="form-lbl">Nombre del proyecto</label>
+                    <input class="proj-input" id="proj-input-name" placeholder="ej. Rediseño web Q2…"
+                        autocomplete="off" />
+                </div>
+                <div class="form-group">
+                    <label class="form-lbl">Descripción <span class="form-opt">opcional</span></label>
+                    <textarea class="proj-input proj-textarea" id="proj-input-desc" rows="3"
+                        placeholder="¿De qué trata este proyecto?"></textarea>
+                </div>
+            </div>
+            <div class="modal-card-footer">
+                <button class="btn-cancel" id="modal-proj-cancel">Cancelar</button>
+                <button class="btn-confirm" id="btn-save-project">Guardar proyecto</button>
+            </div>
+        </div>
+    </div>
+
+  <!-- ════════════ MODAL TAREA ════════════ -->
+  <div class="modal-overlay" id="modal-task">
+    <div class="modal-card modal-task-card">
+      <div class="modal-card-header">
+        <div class="modal-card-title-group">
+          <span class="modal-eyebrow" id="modal-task-eyebrow">Nueva tarea</span>
+          <h3 class="modal-card-title" id="modal-task-title">Detalles de la tarea</h3>
+        </div>
+        <button class="btn-modal-close" id="modal-task-close">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1.5 1.5L10.5 10.5M10.5 1.5L1.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-card-body">
+
+        <!-- TIPO DE TAREA -->
+        <div class="form-group">
+          <label class="form-lbl">Tipo de tarea</label>
+          <div class="task-type-pills" id="task-type-pills">
+            <button class="type-pill active" data-type="NORMAL">
+              <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="3" stroke="currentColor" stroke-width="1.3"/><path d="M5 7l1.5 1.5L9 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Normal
+            </button>
+            <button class="type-pill" data-type="CODE">
+              <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M4 5L2 7l2 2M10 5l2 2-2 2M7 3l-2 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Código
+            </button>
+            <button class="type-pill" data-type="REVIEW">
+              <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 7l1.5 1.5L9.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Revisión
+            </button>
+            <button class="type-pill" data-type="MEETING">
+              <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><rect x="2" y="3" width="10" height="9" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 6h10M5 2v2M9 2v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              Reunión
+            </button>
+            <button class="type-pill" data-type="DOCUMENTATION">
+              <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><rect x="2" y="1" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M5 5h4M5 7.5h4M5 10h2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              Doc
+            </button>
+          </div>
+        </div>
+
+        <!-- TÍTULO -->
+        <div class="form-group">
+          <label class="form-lbl">Título</label>
+          <input class="proj-input proj-input-lg" id="task-input-title" placeholder="¿Qué hay que hacer?" autocomplete="off" />
+        </div>
+
+        <!-- DESCRIPCIÓN -->
+        <div class="form-group">
+          <label class="form-lbl">Descripción <span class="form-opt">opcional</span></label>
+          <textarea class="proj-input proj-textarea" id="task-input-desc" rows="2" placeholder="Contexto adicional…"></textarea>
+        </div>
+
+        <!-- FECHA + ASIGNAR -->
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-lbl">Fecha límite <span class="form-opt">opcional</span></label>
+            <div class="date-field-wrap">
+            <button class="date-trigger" id="date-trigger" type="button">
+              <span class="date-trigger-icon">
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                  <rect x="2" y="3" width="10" height="9" rx="2" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M2 6h10M5 2v2M9 2v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span id="date-trigger-label">Sin fecha</span>
+              <button class="date-clear-btn" id="date-clear-btn" type="button" style="display:none" title="Quitar fecha">
+                <svg width="8" height="8" viewBox="0 0 10 10" fill="none">
+                  <path d="M1.5 1.5L8.5 8.5M8.5 1.5L1.5 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+            </button>
+            <!-- Popover con el mini-calendario -->
+            <div class="date-popover" id="date-popover" style="display:none">
+              <div class="dp-header">
+                <button class="dp-nav" id="dp-prev" type="button">‹</button>
+                <span class="dp-month-label" id="dp-month-label"></span>
+                <button class="dp-nav" id="dp-next" type="button">›</button>
+              </div>
+              <div class="dp-weekdays">
+                <span>Lu</span><span>Ma</span><span>Mi</span>
+                <span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span>
+              </div>
+              <div class="dp-grid" id="dp-grid"></div>
+              <div class="dp-footer">
+                <button class="dp-today-btn" id="dp-today-btn" type="button">Hoy</button>
+                <button class="dp-clear-btn" id="dp-clear-btn" type="button">Sin fecha</button>
+              </div>
+            </div>
+            <!-- Input hidden para mantener el valor -->
+            <input type="hidden" id="task-input-deadline" />
+            </div><!-- /date-field-wrap -->
+            <div class="prio-hint" id="prio-hint" style="display:none">
+              <span class="prio-hint-dot" id="prio-hint-dot"></span>
+              <span class="prio-hint-label" id="prio-hint-label"></span>
+              <span class="prio-hint-sub" id="prio-hint-sub"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">Asignar a</label>
+            <div class="custom-select" id="assignee-select" data-value="">
+              <button class="custom-select-trigger custom-select-trigger-input" type="button">
+                <span class="cs-avatar-empty">
+                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4.5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 11c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                </span>
+                <span class="custom-select-label">Sin asignar</span>
+                <svg class="custom-select-caret" width="8" height="8" viewBox="0 0 10 10" fill="none">
+                  <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <div class="custom-select-dropdown" id="assignee-dropdown">
+                <div class="custom-select-option cs-selected" data-value="">
+                  <span class="cs-avatar-empty"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4.5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 11c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                  Sin asignar
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN CODE TASK (visible solo cuando type = CODE) -->
+        <div class="code-task-section" id="code-task-section" style="display:none">
+          <div class="code-task-header">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M4 5L2 7l2 2M10 5l2 2-2 2M7 3l-2 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Detalles del código
+          </div>
+          <div class="code-task-fields">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-lbl">
+                  <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 6h4M6 4v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                  Lenguaje
+                </label>
+                <input class="proj-input code-input" id="code-input-language" placeholder="TypeScript, Python, Java…" autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label class="form-lbl">
+                  <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 6c0-2.2 1.8-4 4-4s4 1.8 4 4M3 9l1-3h4l1 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Rama <span class="form-opt">opcional</span>
+                </label>
+                <input class="proj-input code-input" id="code-input-branch" placeholder="feature/nombre-rama" autocomplete="off" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-lbl">
+                <svg width="9" height="9" viewBox="0 0 12 12" fill="none"><path d="M2 2h8a1 1 0 011 1v7a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.2"/><path d="M3 5h6M3 7h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                URL del repositorio <span class="form-opt">opcional</span>
+              </label>
+              <div class="code-repo-wrap">
+                <span class="code-repo-icon">
+                  <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                  </svg>
+                </span>
+                <input class="proj-input code-input code-input-repo" id="code-input-repo" placeholder="https://github.com/org/repo" autocomplete="off" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-card-footer">
+        <button class="btn-cancel" id="modal-task-cancel">Cancelar</button>
+        <button class="btn-confirm" id="btn-save-task">Guardar tarea</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ════════════ MODAL CONFIRMAR ════════════ -->
+  <div class="modal-overlay" id="modal-confirm">
+    <div class="modal-card modal-card-xs">
+      <div class="modal-card-header">
+        <div class="modal-card-title-group">
+          <span class="modal-eyebrow modal-eyebrow-danger" id="confirm-eyebrow">Atención</span>
+          <h3 class="modal-card-title" id="confirm-title">Confirmar eliminación</h3>
+        </div>
+        <button class="btn-modal-close" id="modal-confirm-close">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M1.5 1.5L10.5 10.5M10.5 1.5L1.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-card-body">
+        <p class="confirm-text" id="confirm-text"></p>
+        <p class="confirm-warn" id="confirm-warn"></p>
+      </div>
+      <div class="modal-card-footer">
+        <button class="btn-cancel" id="modal-confirm-cancel">Cancelar</button>
+        <button class="btn-delete" id="btn-confirm-delete">Sí, eliminar</button>
+      </div>
+    </div>
+  </div>
+
+    <div class="toast-container" id="toast-container"></div>
+		
+    <script src="./scripts/pages/projects.js"></script>
+</body>
+
+</html>

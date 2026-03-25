@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TreeCO — Calendario</title>
+    <link rel="icon" type="image/png" href="./assets/img/favicon/TreeCO.svg" />
+    <link rel="apple-touch-icon" href="./assets/img/favicon/TreeCO.svg" />
+    <link rel="stylesheet" href="./styles/core/root.css" />
+    <link rel="stylesheet" href="./styles/core/base.css" />
+    <link rel="stylesheet" href="./styles/pages/calendar.css" />
+		
+		<link rel="stylesheet" href="./components/header/header.css" />
+    <script src="./components/header/header-component.js" defer></script>
+</head>
+
+<body>
+    <header-component></header-component>
+    <!-- ── Contenido bajo el header ── -->
+    <div class="cal-page">
+
+        <!-- SIDEBAR -->
+        <aside class="cal-sidebar">
+
+            <div class="mini-cal glass-card">
+                <div class="mini-cal-header">
+                    <button class="mini-nav-btn" id="mini-prev">‹</button>
+                    <button class="mini-month-btn" id="mini-month-label-btn">
+                        <span id="mini-month-label"></span>
+                    </button>
+                    <button class="mini-nav-btn" id="mini-next">›</button>
+                </div>
+                <div class="mini-weekdays">
+                    <span>Lu</span><span>Ma</span><span>Mi</span>
+                    <span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span>
+                </div>
+                <div class="mini-grid" id="mini-grid"></div>
+            </div>
+
+            <div class="sidebar-card glass-card">
+                <p class="card-label">Leyenda</p>
+                <div class="legend-grid">
+                    <div class="legend-item"><span class="dot dot-high"></span>Alta</div>
+                    <div class="legend-item"><span class="dot dot-mid"></span>Media</div>
+                    <div class="legend-item"><span class="dot dot-low"></span>Baja</div>
+                    <div class="legend-item"><span class="dot dot-done"></span>Hecha</div>
+                    <div class="legend-item"><span class="dot dot-exp"></span>Vencida</div>
+                    <div class="legend-item"><span class="dot dot-today"></span>Hoy</div>
+                </div>
+            </div>
+
+            <div class="sidebar-card glass-card upcoming-card">
+                <p class="card-label">Próximos 7 días</p>
+                <div class="upcoming-list" id="upcoming-list">
+                    <span class="empty-msg">Cargando…</span>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- CALENDARIO -->
+        <section class="cal-section">
+
+            <!-- Barra de control -->
+            <div class="cal-bar glass-card">
+                <div class="nav-group">
+                    <button class="icon-btn" id="cal-prev">
+                        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                            <path d="M9 2L4 7L9 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                    <button class="title-btn" id="cal-title-btn" title="Ir a mes / año  (G)">
+                        <span class="title-month" id="cal-month-name"></span>
+                        <span class="title-year" id="cal-year"></span>
+                        <svg class="title-caret" width="9" height="9" viewBox="0 0 10 10" fill="none">
+                            <path d="M1.5 3.5L5 7L8.5 3.5" stroke="currentColor" stroke-width="1.4"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
+                    <button class="icon-btn" id="cal-next">
+                        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                            <path d="M5 2L10 7L5 12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="toolbar">
+                    <div class="search-wrap">
+                        <svg width="11" height="11" viewBox="0 0 13 13" fill="none">
+                            <circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.3" />
+                            <path d="M9 9L12 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                        </svg>
+                        <input type="text" id="task-search" class="search-input" placeholder="Buscar…  (/)"
+                            autocomplete="off" />
+                        <div class="search-results" id="search-results"></div>
+                    </div>
+                    <div class="select-wrap">
+                        <select id="project-filter" class="proj-select">
+                            <option value="">Todos los proyectos</option>
+                        </select>
+                        <svg width="8" height="8" viewBox="0 0 10 10" fill="none" class="sel-caret">
+                            <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.4"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="bar-actions">
+                    <button class="btn-today" id="btn-today">Hoy</button>
+                    <div class="view-toggle">
+                        <button class="vbtn active" id="view-month">Mes</button>
+                        <button class="vbtn" id="view-week">Semana</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cabecera días -->
+            <div class="weekdays-row" id="cal-weekdays">
+                <span>Lun</span><span>Mar</span><span>Mié</span>
+                <span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+            </div>
+
+            <!-- Grid -->
+            <div class="cal-grid" id="cal-grid"></div>
+
+            <div class="cal-loading" id="cal-loading">
+                <div class="spinner"></div>
+            </div>
+
+        </section>
+    </div>
+
+    <!-- PICKER MES / AÑO -->
+    <div class="picker-overlay" id="picker-backdrop">
+        <div class="picker-box" id="picker-card">
+
+            <!-- Cabecera -->
+            <div class="picker-head">
+                <span class="picker-label">Ir a fecha</span>
+                <button class="picker-close-btn" id="picker-close-btn" title="Cerrar (Esc)">
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                        <path d="M1.5 1.5L10.5 10.5M10.5 1.5L1.5 10.5" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Año -->
+            <div class="picker-year-row">
+                <button class="py-btn" id="picker-year-prev">
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                        <path d="M8 2L4 6L8 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <input type="number" class="py-input" id="picker-year-input" min="2000" max="2099" />
+                <button class="py-btn" id="picker-year-next">
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                        <path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Meses -->
+            <div class="picker-months" id="picker-months"></div>
+
+            <!-- Footer -->
+            <div class="picker-footer">
+                <button class="picker-today-btn" id="picker-today-btn">Hoy</button>
+                <div class="picker-footer-right">
+                    <button class="picker-cancel-btn" id="picker-cancel-btn">Cancelar</button>
+                    <button class="picker-apply-btn" id="picker-apply-btn">Aplicar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MODAL DÍA -->
+    <div class="modal-overlay" id="day-modal-backdrop">
+        <div class="modal-box" id="day-modal">
+            <div class="modal-head">
+                <div>
+                    <span class="modal-eyebrow">Tareas del día</span>
+                    <h3 class="modal-date" id="modal-date-title"></h3>
+                </div>
+                <div class="modal-head-right">
+                    <div id="modal-day-stats"></div>
+                    <button class="icon-btn" id="modal-close">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path d="M1.5 1.5L10.5 10.5M10.5 1.5L1.5 10.5" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-filters">
+                <button class="mf active" data-filter="all">Todas</button>
+                <button class="mf" data-filter="active">Activas</button>
+                <button class="mf" data-filter="completed">Completadas</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-tasks-list"></div>
+            </div>
+            <div class="modal-foot">
+                <button class="add-task-btn" id="btn-add-task">
+                    <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
+                        <path d="M5 1V9M1 5H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                    Nueva tarea
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Overlay para cerrar el drawer en móvil -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- DRAWER MÓVIL — solo tareas próximas (≤ 700px) -->
+    <div class="mobile-drawer" id="mobile-drawer" aria-hidden="true">
+      <div class="mobile-drawer-handle"></div>
+      <div class="mobile-drawer-head">
+        <span class="mobile-drawer-title">Próximas tareas</span>
+        <button class="mobile-drawer-close" id="mobile-drawer-close" aria-label="Cerrar">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 2L12 12M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="mobile-drawer-body" id="mobile-drawer-body">
+        <!-- Rellenado por JS -->
+      </div>
+    </div>
+
+    <!-- FAB — solo visible en ≤ 700px -->
+    <button class="fab-toggle" id="fab-toggle" aria-label="Ver próximas tareas" title="Próximas tareas">
+      <!-- icono calendario -->
+      <svg class="fab-icon-cal" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <rect x="2.5" y="4.5" width="17" height="15" rx="3" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M2.5 9h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M7 2.5v3M15 2.5v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+        <circle cx="7.5"  cy="13.5" r="1.1" fill="currentColor"/>
+        <circle cx="11"   cy="13.5" r="1.1" fill="currentColor"/>
+        <circle cx="14.5" cy="13.5" r="1.1" fill="currentColor"/>
+      </svg>
+      <!-- icono cerrar -->
+      <svg class="fab-icon-close" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M2 2L16 16M16 2L2 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <script src="./scripts/core/loadComponents.js"></script>
+    <script src="./scripts/pages/calendar.js"></script>
+</body>
+
+</html>

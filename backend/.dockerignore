@@ -1,0 +1,11 @@
+target
+bin
+node_modules
+.git
+.gitignore
+.vscode
+.cursor
+.idea
+*.log
+
+node_modules/

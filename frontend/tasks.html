@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TreeCO — Tasks</title>
+
+    <link rel="icon" type="image/png" href="./assets/img/favicon/TreeCO.svg" />
+    <link rel="apple-touch-icon" href="./assets/img/favicon/TreeCO.svg" />
+
+    <link rel="stylesheet" href="./styles/core/root.css" />
+    <link rel="stylesheet" href="./styles/core/base.css" />
+    <link rel="stylesheet" href="./styles/pages/tasks.css" />
+    <link rel="stylesheet" href="./components/header/header.css" />
+</head>
+
+<body>
+    <header-component></header-component>
+
+    <main class="tasksPage">
+        <section class="tasksLayout">
+            <aside class="tasksSidebar">
+                <div class="tasksSidebarTitle">
+                    <h2>Categorías</h2>
+                    <p>Acceso rápido</p>
+                </div>
+
+                <nav class="tasksSidebarNav">
+                    <button type="button" class="tasksSidebarLink tasksSidebarLinkActive" data-category="all">
+                        Todas
+                    </button>
+                    <button type="button" class="tasksSidebarLink" data-category="in_progress">
+                        En progreso
+                    </button>
+                    <button type="button" class="tasksSidebarLink" data-category="expired">
+                        Vencidas
+                    </button>
+                    <button type="button" class="tasksSidebarLink" data-category="completed">
+                        Completadas
+                    </button>
+                    <button type="button" class="tasksSidebarLink" data-category="high">
+                        Alta prioridad
+                    </button>
+                    <button type="button" class="tasksSidebarLink" data-category="mid">
+                        Media prioridad
+                    </button>
+                    <button type="button" class="tasksSidebarLink" data-category="low">
+                        Baja prioridad
+                    </button>
+                    <button type="button" class="tasksSidebarLink" data-category="with_deadline">
+                        Con fecha límite
+                    </button>
+                    <button type="button" class="tasksSidebarLink" data-category="without_deadline">
+                        Sin fecha
+                    </button>
+                </nav>
+            </aside>
+
+            <section class="tasksContent">
+                <header class="tasksPageHeader">
+                    <div>
+                        <p class="tasksPageEyebrow">Workspace</p>
+                        <h1 class="tasksPageTitle">Tasks</h1>
+                        <p class="tasksPageSubtitle">
+                            Gestiona todas tus tareas, filtra por prioridad y organiza tu trabajo.
+                        </p>
+                    </div>
+                </header>
+
+                <section class="tasksStats">
+                    <article class="tasksStat">
+                        <span class="tasksStatLabel">En progreso</span>
+                        <strong id="statInProgress" class="tasksStatValue">0</strong>
+                    </article>
+
+                    <article class="tasksStat">
+                        <span class="tasksStatLabel">Vencidas</span>
+                        <strong id="statExpired" class="tasksStatValue">0</strong>
+                    </article>
+
+                    <article class="tasksStat">
+                        <span class="tasksStatLabel">Completadas</span>
+                        <strong id="statCompleted" class="tasksStatValue">0</strong>
+                    </article>
+
+                    <article class="tasksStat">
+                        <span class="tasksStatLabel">Alta prioridad</span>
+                        <strong id="statHigh" class="tasksStatValue">0</strong>
+                    </article>
+                </section>
+
+                <section class="tasksToolbar">
+                    <div class="tasksToolbarSearch">
+                        <input id="searchTask" type="text" placeholder="Buscar por título..." />
+                    </div>
+
+                    <div class="tasksToolbarFilters">
+                        <select id="filterState">
+                            <option value="all">Estado</option>
+                            <option value="in_progress">En progreso</option>
+                            <option value="expired">Vencidas</option>
+                            <option value="completed">Completadas</option>
+                        </select>
+
+                        <select id="filterPriority">
+                            <option value="all">Prioridad</option>
+                            <option value="high">Alta</option>
+                            <option value="mid">Media</option>
+                            <option value="low">Baja</option>
+                        </select>
+
+                        <select id="filterProject">
+                            <option value="all">Proyecto</option>
+                        </select>
+
+                        <select id="sortTasks">
+                            <option value="deadline">Fecha límite</option>
+                            <option value="priority">Prioridad</option>
+                            <option value="title">Nombre</option>
+                            <option value="created">Fecha creación</option>
+                        </select>
+                    </div>
+                </section>
+
+                <section class="taskGroup">
+                    <div class="taskGroupHeader">
+                        <h2 id="tasksSectionTitle">Todas las tareas</h2>
+                        <span id="tasksCount">0 tareas</span>
+                    </div>
+
+                    <div id="tasksContainer" class="taskList"></div>
+                </section>
+            </section>
+        </section>
+    </main>
+
+    <script src="./components/header/header-component.js" defer></script>
+    <script type="module" src="./scripts/pages/tasks.js"></script>
+</body>
+
+</html>
