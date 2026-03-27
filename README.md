@@ -19,7 +19,7 @@
 
 </div>
 
-> El backend tarde en responder al principio por inactividad
+> El backend tarda en responder al principio por inactividad
 
 ---
 
