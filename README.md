@@ -15,11 +15,11 @@
 <br/>
 
 ### 🚀 **Demo en producción**
-👉 https://treeco.vercel.app
+👉 https://treeco-kappa.vercel.app/
 
 </div>
 
-> Aplicación full-stack para gestión de tareas y productividad, desarrollada como proyecto profesional orientado a DAW / portfolio.
+> El backend tarde en responder al principio por inactividad
 
 ---
 
