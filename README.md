@@ -4,7 +4,7 @@
 <div align="center">
 
 ![HTML](https://img.shields.io/badge/HTML5-08080f?style=for-the-badge&logo=html5&logoColor=E34F26)
-![CSS](https://img.shields.io/badge/CSS3-08080f?style=for-the-badge&logo=css3&logoColor=1572B6)
+![CSS](https://img.shields.io/badge/CSS3-08080f?style=for-the-badge&logo=css&logoColor=1572B6)
 ![JavaScript](https://img.shields.io/badge/JavaScript-08080f?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
 ![Java](https://img.shields.io/badge/Java-08080f?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring](https://img.shields.io/badge/SpringBoot-08080f?style=for-the-badge&logo=springboot&logoColor=6DB33F)
